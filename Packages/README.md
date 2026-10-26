@@ -39,4 +39,4 @@ Rules:
 
 1. Create it under `Packages/` (or `Packages/Providers/`).
 2. Register it in the root `project.yml` under `packages:` and add the product to the `SmartLights` target's `dependencies:` (see the comment there).
-3. If it has a codec product, add it to the Linux codec CI job (`.github/workflows/linux-codecs.yml`).
+3. If it builds on Linux (codec-only or fully `#if`-guarded), add an empty `LINUX_OK` file in the package folder; the Linux codec job discovers it automatically (`tools/ci/find-linux-packages.sh`). Add `LINUX_SKIP` to exclude, `IOS_ONLY` if it cannot build for macOS.
