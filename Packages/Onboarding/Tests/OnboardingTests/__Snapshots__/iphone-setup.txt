@@ -1,0 +1,25 @@
+# Set up your iPhone (§0) [phase 1]
+One-time iPhone setup, shown before the first brand that talks to lights on your Wi-Fi.
+
+1. Local Network permission
+   A denial silently breaks all discovery, so we explain the prompt before triggering it.
+   The first time the app scans, iOS asks "SmartLights would like to find and connect to devices on your local network." Tap *Allow*.
+   > [Continue]
+   It didn't work?
+     ? I tapped Don't Allow
+       Settings > Privacy & Security > Local Network > turn *SmartLights* on.
+
+2. Same Wi-Fi
+   Most bulbs are 2.4 GHz-only; the phone can be on 5 GHz as long as it is the same network/subnet.
+   [ ] iPhone is on the home Wi-Fi (not cellular).
+   [ ] Not a Guest network.
+   [ ] No VPN running.
+
+3. Bluetooth permission (optional)
+   Only needed for Hue Bluetooth bulbs, SwitchBot BLE and Matter commissioning. The app asks when one of those needs it.
+
+4. HomeKit permission (optional)
+   Only needed when you add the *Apple Home* provider.
+
+5. Home hub (optional)
+   A home hub (HomePod / Apple TV) is only needed for Matter-over-Thread devices and for remote access/automations via Apple Home. iOS 18+ can add Wi-Fi Matter accessories without a hub.

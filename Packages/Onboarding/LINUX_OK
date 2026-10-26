@@ -1,0 +1,4 @@
+Onboarding builds and tests on Linux: the guide model, catalog, runner and text renderer are
+Foundation + Observation only; SwiftUI views are behind #if canImport(SwiftUI).
+Verify with (mount the whole Packages folder because of the ../LightCore path dependency):
+  docker run --rm -v "<repo>/Packages:/pk" -w /pk/Onboarding swift:6.1 swift test

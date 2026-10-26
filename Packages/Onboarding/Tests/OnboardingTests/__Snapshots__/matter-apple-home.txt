@@ -1,0 +1,29 @@
+# Add a Matter light to Apple Home (§0.1) [phase 1] [verify]
+Generic route for any light with a Matter logo: add it in Apple's Home app, then control it here through the Apple Home provider.
+
+1. Open the Home app (optional)
+   Open the Apple *Home* app > *+* > *Add Accessory*.
+   > [Open Home <com.apple.home://>]
+
+2. Scan the Matter code [verify]
+   Scan the Matter QR code on the bulb/box.
+   If the bulb is already paired to the vendor app, tap *More options* and pick it, or generate a pairing code in the vendor app (multi-admin).
+   (verify: Apple Home "Turn On Pairing Mode" wording for Matter multi-admin sharing.)
+
+3. While it pairs
+   [ ] Bluetooth is on.
+   [ ] You are near the device.
+   [ ] Use the 2.4 GHz network during commissioning.
+   [ ] Photograph the QR code; it is needed after a factory reset.
+
+4. Back in SmartLights
+   *Add brand > Apple Home* and grant HomeKit access. All Apple Home lights appear.
+   Note: a native HomeKit (non-Matter) accessory can be paired to only one controller; Matter devices can be in several apps at once.
+
+Alternatives:
+- Continue with Apple Home (recommended) -> applehome
+  Grant HomeKit access so every Apple Home light shows up here.
+
+To verify:
+- apple-home-pairing-mode: Apple Home "Turn On Pairing Mode" wording for Matter multi-admin sharing.
+- home-deeplink: Deep link com.apple.home:// opens the Home app (undocumented scheme).
