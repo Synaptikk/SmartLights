@@ -1,0 +1,13 @@
+{
+  "name": "smartlights-probe",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only-by-default hardware probes for WiZ, Hue and AiDot (Node built-ins only).",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "wiz": "node wiz.mjs",
+    "hue": "node hue.mjs",
+    "aidot": "node aidot.mjs"
+  }
+}
