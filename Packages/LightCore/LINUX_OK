@@ -1,0 +1,3 @@
+LightCore builds and tests on Linux (Foundation only, no Apple frameworks outside #if canImport guards).
+Verify with:
+  docker run --rm -v "<repo>/Packages/LightCore:/src" -w /src swift:6.1 swift test

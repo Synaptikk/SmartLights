@@ -21,3 +21,7 @@ Template (copy for each project):
 -->
 
 _No third-party code has been included yet._
+
+## LightCore
+
+See `Packages/LightCore/NOTICES.md` for attributions (Home Assistant Apache-2.0 colour utilities, house-control MIT, benknight/rgbxy MIT).
