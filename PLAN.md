@@ -222,6 +222,18 @@ The guide engine must support: info step, checklist step, action step with a pro
 
 ---
 
+## 7b. Voice assistants ("Hey Siri", "Hey Google", "Alexa")
+
+Requirement added 2026-10-26: voice control baked in.
+
+| Assistant | How it can reach our lights | Plan |
+|---|---|---|
+| **Siri** | App Intents + Shortcuts run in-app with no cloud ("Hey Siri, turn on the kitchen lights in SmartLights", plus custom phrases via App Shortcuts). HomeKit lights also get Siri natively through Apple Home. | **Phase 1 (T1.10)**: App Intents for toggle light/room, set brightness, set colour/temperature, recall scene; `AppShortcutsProvider` phrases; entity queries so Siri can resolve light and room names; HomeKit-backed lights route through the app process. |
+| **Google Assistant / Google Home** | Cannot invoke an iPhone app. Needs a Google Smart Home Action: OAuth account linking + a hosted fulfillment webhook (SYNC/QUERY/EXECUTE), or the Local Home SDK on a Google speaker. | Three routes, user picks: (a) keep each vendor's existing Google link (works today for Hue, WiZ, AiDot, LIFX, Govee, TP-Link...); (b) Home Assistant + Nabu Casa Cloud exposes every light to Google and Alexa with no code (fits the phase 3 HA provider); (c) **T3.11**: our own cloud bridge (Google Action + Alexa Smart Home Skill, OAuth server, device relay) — requires hosting and a relay from the home network since the phone is not always on. |
+| **Alexa** | Same constraint: Alexa Smart Home Skill with account linking and a Lambda/webhook. | Same three routes as Google. |
+
+Decision D11: Siri is native and in phase 1. Google/Alexa default to routes (a) now and (b) when the HA provider lands; route (c) is scoped in T3.11 and only built if the user wants a server-free, single-app experience badly enough to run a cloud service.
+
 ## 8. What only the user can do (prerequisites)
 
 1. Enrol in the Apple Developer Program ($99/yr) and create an App Store Connect API key for CI.

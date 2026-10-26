@@ -84,6 +84,10 @@ Conventions: Swift 6 strict concurrency, `actor` providers, `AsyncStream` for ev
 ### T1.8 App scenes (depends T1.5, T1.6)
 - Snapshot current state of selected lights across brands into an app scene; recall with per-provider optimised writes (Hue grouped_light where a whole room, WiZ back-to-back datagrams).
 
+### T1.10 Siri and Shortcuts (depends T1.5, T1.6)
+- App Intents: `ToggleLightIntent`, `SetBrightnessIntent`, `SetColorIntent`, `SetColorTemperatureIntent`, `RecallSceneIntent`, `SetRoomIntent`; `AppEntity` + `EntityQuery` for lights, rooms and scenes so Siri resolves names ("Hey Siri, set the lamp to 30% in SmartLights"); `AppShortcutsProvider` with natural phrases; `ForegroundContinuableIntent` for HomeKit-backed lights; intents run against cached device IPs with a fast unicast path (no discovery). Explain in Settings how to say the phrases and how Apple Home lights also respond to plain Siri.
+- Accept: intents appear in Shortcuts; Siri executes toggle and brightness against the simulators; CI builds the intents extension.
+
 ### T1.9 Phase-1 release
 - TestFlight build; `docs/TESTPLAN.md` executed by the user with the diagnostics export; fix list; tag `v0.1`.
 
@@ -108,6 +112,7 @@ Conventions: Swift 6 strict concurrency, `actor` providers, `AsyncStream` for ev
 - **T3.7 Matter own fabric**: MatterSupport extension, `MTRDeviceControllerFactory`, iCloud Keychain IPK, Wi-Fi only; guide explains the Thread limitation.
 - **T3.8 Hue Entertainment**: DTLS-PSK via NIOTransportServices (see HueEntertainmentKit), HueStream v2 frames, 25-50 Hz, photosensitivity warning.
 - **T3.9 Hue BLE**: CoreBluetooth with HueBLE characteristics.
+- **T3.11 Google Assistant and Alexa cloud bridge** (only if the user chooses route (c) in `PLAN.md` §7b): design doc first — OAuth 2.0 server, Google Smart Home Action fulfillment (SYNC/QUERY/EXECUTE) and Alexa Smart Home Skill handlers, a device relay from the home (phone cannot be the relay; needs a small always-on service or the HA provider), device/trait mapping from `Light`. Compare with Home Assistant + Nabu Casa before building.
 - **T3.10 Remote access**: Hue Remote API (if approved) and cloud fallbacks per brand; otherwise document Tailscale/VPN.
 
 ---
