@@ -1,0 +1,102 @@
+# XcodeGen spec for SmartLights.
+# The .xcodeproj is NOT committed; CI (and any Mac) generates it with:
+#   brew install xcodegen && xcodegen generate
+# See docs/BUILD.md.
+name: SmartLights
+
+options:
+  bundleIdPrefix: com.sinap
+  deploymentTarget:
+    iOS: "18.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    # Signing: leave DEVELOPMENT_TEAM empty here; CI / local Mac pass it in
+    # (xcodebuild DEVELOPMENT_TEAM=XXXXXXXXXX ...). Simulator builds in CI use
+    # CODE_SIGNING_ALLOWED=NO.
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+
+# Local Swift packages. They live under Packages/ and are owned by other tasks.
+# To add another package:
+#   1. add an entry here, e.g.
+#        HueKit:
+#          path: Packages/Providers/HueKit
+#   2. add `- package: HueKit` + `product: HueProvider` (the library product
+#      name declared in that package's Package.swift) under the app target's
+#      `dependencies` below (and under any extension target that needs it).
+packages:
+  LightCore:
+    path: Packages/LightCore
+  NetKit:
+    path: Packages/NetKit
+
+targets:
+  SmartLights:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: App
+        # Info.plist and entitlements are referenced via build settings, not
+        # compiled or copied; Tests are a separate target.
+        excludes:
+          - "Tests"
+          - "Tests/**"
+          - "Resources/Info.plist"
+          - "*.entitlements"
+          - "**/README.md"
+    dependencies:
+      - package: LightCore
+        product: LightCore
+      - package: NetKit
+        product: NetKit
+      - sdk: HomeKit.framework
+    settings:
+      base:
+        PRODUCT_NAME: SmartLights
+        PRODUCT_BUNDLE_IDENTIFIER: com.sinap.smartlights
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: App/Resources/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        # Default entitlements do NOT contain the multicast entitlement, so CI
+        # and development builds work before Apple grants it. Once granted,
+        # switch to App/SmartLights.multicast.entitlements (edit this line, or
+        # override on the command line:
+        #   xcodebuild ... CODE_SIGN_ENTITLEMENTS=App/SmartLights.multicast.entitlements)
+        CODE_SIGN_ENTITLEMENTS: App/SmartLights.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_MACCATALYST: NO
+        ENABLE_PREVIEWS: YES
+    scheme:
+      testTargets:
+        - SmartLightsTests
+      gatherCoverageData: true
+
+  SmartLightsTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: App/Tests
+    dependencies:
+      - target: SmartLights
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sinap.smartlights.tests
+        GENERATE_INFOPLIST_FILE: YES
+        # TEST_HOST / BUNDLE_LOADER are set automatically by XcodeGen because
+        # this target depends on the SmartLights app target.
+
+# Extensions (Extensions/Widgets, Extensions/Intents, Extensions/MatterSetup)
+# are added as targets here by their own tasks; each must share the App Group
+# group.com.sinap.smartlights and the keychain group with the app.

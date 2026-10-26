@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Default entitlements for the SmartLights app target (used by CI and all
+  builds until Apple grants the multicast entitlement).
+
+  Deliberately WITHOUT com.apple.developer.networking.multicast: that is a
+  managed capability, and signing with it before Apple approves it for the
+  team fails. See SmartLights.multicast.entitlements.
+
+  Keep this file and SmartLights.multicast.entitlements identical apart from
+  the multicast key.
+-->
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.homekit</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.sinap.smartlights</string>
+	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.sinap.smartlights</string>
+	</array>
+</dict>
+</plist>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>SmartLights</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+
+	<!-- Privacy: local network (must be in the APP's Info.plist, not an extension's). -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>SmartLights finds and controls the lights, bridges and hubs on your home network (for example Philips Hue, WiZ, LIFX and Nanoleaf) directly, without going through the internet.</string>
+
+	<!-- Every Bonjour service type the app browses. Browsing an unlisted type
+	     requires the multicast entitlement. Add new brands here. -->
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_hue._tcp</string>
+		<string>_nanoleafapi._tcp</string>
+		<string>_elg._tcp</string>
+		<string>_shelly._tcp</string>
+		<string>_wled._tcp</string>
+		<string>_lifx._udp</string>
+		<string>_miio._udp</string>
+		<string>_lutron._tcp</string>
+		<string>_http._tcp</string>
+		<string>_matter._tcp</string>
+		<string>_matterc._udp</string>
+		<string>_matterd._udp</string>
+	</array>
+
+	<key>NSHomeKitUsageDescription</key>
+	<string>SmartLights shows and controls the lights you have already added to Apple Home, including Matter lights, alongside your other brands.</string>
+
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>SmartLights uses Bluetooth to find and set up nearby Bluetooth lights and to add Matter devices.</string>
+</dict>
+</plist>

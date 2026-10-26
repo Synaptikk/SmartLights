@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Entitlements WITH the multicast entitlement.
+
+  NOT used by default. Swap it in only after Apple has granted
+  com.apple.developer.networking.multicast to the team
+  (request: https://developer.apple.com/contact/request/networking-multicast)
+  and the App ID has the capability enabled. Swap by either:
+    - setting CODE_SIGN_ENTITLEMENTS: App/SmartLights.multicast.entitlements
+      in project.yml, or
+    - passing CODE_SIGN_ENTITLEMENTS=App/SmartLights.multicast.entitlements
+      to xcodebuild (e.g. only in the TestFlight workflow).
+
+  The app must still work without it: NetKit's BroadcastCapability detects
+  whether broadcast/multicast is allowed and falls back to unicast sweeps and
+  manual IP entry.
+
+  Keep this file identical to SmartLights.entitlements apart from the
+  multicast key.
+-->
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.homekit</key>
+	<true/>
+	<key>com.apple.developer.networking.multicast</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.sinap.smartlights</string>
+	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.sinap.smartlights</string>
+	</array>
+</dict>
+</plist>
