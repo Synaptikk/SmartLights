@@ -1,0 +1,10 @@
+.DS_Store
+*.xcuserstate
+xcuserdata/
+DerivedData/
+.build/
+.swiftpm/
+*.xcresult
+tools/probe/out/
+node_modules/
+.env
