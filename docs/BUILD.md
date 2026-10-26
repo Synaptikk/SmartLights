@@ -96,3 +96,117 @@ In Docker: `docker run --rm -v "${PWD}:/src" -w /src swift:6.1 swift format lint
 
 - `ITSAppUsesNonExemptEncryption` is `false` in Info.plist (standard TLS/HMAC/AES for device protocols only). Revisit if the app ever ships proprietary encryption.
 - The app icon set (`App/Resources/Assets.xcassets/AppIcon.appiconset`) has no image yet; add a 1024x1024 PNG before the first TestFlight upload.
+
+## CI and TestFlight (T0.2)
+
+Three GitHub Actions workflows; all logic lives in bash scripts under `tools/ci/` so it can be read and re-run outside Actions.
+
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `.github/workflows/ios.yml` | push to `main`, every PR, manual | Job **packages**: `swift test` for every package under `Packages/` on macOS (iOS simulator via `xcodebuild` for packages marked `IOS_ONLY`). Job **app**: `xcodegen generate`, then `xcodebuild build-for-testing` + `test-without-building` of scheme `SmartLights` on an auto-picked iPhone simulator, unsigned. `.xcresult` bundles and logs are uploaded as artifacts on failure. |
+| `.github/workflows/linux-codecs.yml` | push/PR touching `Packages/**` or `tools/ci/**`, manual | Discovers Linux packages (`tools/ci/find-linux-packages.sh`) and runs `swift build` + `swift test` in `swift:6.1` (project floor) and `swift:6.4` (newest 6.x on Docker Hub, Oct 2026). The aggregate check **"Linux codecs OK"** is the one to require in branch protection. |
+| `.github/workflows/testflight.yml` | tag `v*`, manual | Archives with automatic signing via the App Store Connect API key and uploads to App Store Connect, where the build shows up in TestFlight. A manual run can instead export a `release-testing` (ad hoc) `.ipa` artifact. |
+
+Workflows are tolerant of an incomplete repo: no `project.yml` means the app job is skipped with a warning; no packages means nothing to test; no Linux packages means the matrix is skipped.
+
+### Runner and Xcode
+
+As of 2026-10, GitHub's `macos-26` / `macos-latest` image only has Xcode 26.x. Xcode 27 is on the separate **`xcode-27`** image (macOS 27, arm64, labelled "preview": Xcode 27.0, 27.1 (default), 27.2 RC; iOS 27.0/27.1 simulators; no "iPhone 16"). The workflows default to `runs-on: xcode-27` and the image's default Xcode. You can change this in repo **Settings > Secrets and variables > Actions > Variables** without editing YAML:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `MACOS_RUNNER` | `xcode-27` | Runner label, e.g. `macos-26` once that image ships Xcode 27 |
+| `XCODE_VERSION` | empty (image default) | e.g. `27.2`; `tools/ci/select-xcode.sh` picks `/Applications/Xcode_<v>.app` or the newest match. It warns if the selected Xcode is older than 27 |
+| `SIM_NAME` | empty (auto) | Preferred simulator name. `tools/ci/pick-simulator.sh` otherwise takes the first `iPhone <number>` on the newest iOS runtime. Do not hard-code device names in workflows, because they change with every image |
+| `CODE_SIGN_ENTITLEMENTS` | empty | TestFlight only: set to `App/SmartLights.multicast.entitlements` after Apple grants multicast |
+
+XcodeGen is installed with Homebrew on every run. Set env `XCODEGEN_VERSION` (e.g. `2.44.1`) in the workflow to pin a GitHub release instead.
+
+### Scripts (`tools/ci/`)
+
+| Script | Use |
+|---|---|
+| `lib.sh` | Shared helpers (logging, `list_packages`, `has_tests`) |
+| `find-linux-packages.sh [--json\|--lines]` | Lists the Linux-tested packages (rules below) |
+| `linux-package-test.sh <pkg>` | `swift build` + `swift test` for one package; runs inside the swift container |
+| `linux-local.sh [pkg ...]` | **Run this on the Windows dev box (Git Bash + Docker)** to reproduce the Linux job. Set `SWIFT_IMAGE=swift:6.4` to use the newer toolchain |
+| `select-xcode.sh` | `xcode-select` + `DEVELOPER_DIR` export |
+| `generate-project.sh` | Installs XcodeGen and runs `xcodegen generate` (no-op without `project.yml`) |
+| `pick-simulator.sh` | Prints the UDID of an available iPhone simulator |
+| `test-packages-macos.sh [pkg ...]` | Package build and tests on macOS. Keeps going after a failure, then fails at the end |
+| `build-app.sh` | App build and tests on the simulator (unsigned; override with `SIM_SIGNING_ARGS`) |
+| `testflight.sh` | Archive, export or upload (see below) |
+
+### Package conventions CI relies on
+
+- **Linux selection**: a package under `Packages/` is built and tested on Linux if its directory contains an empty **`LINUX_OK`** file, **or** its directory name ends in `Codec`, **or** it is `LightCore`. A **`LINUX_SKIP`** file overrides all of these. Every `Packages/Providers/<Brand>Kit` that has a codec must add `LINUX_OK`.
+- Because `swift test` on Linux builds the **whole** package, the `XxxProvider` sources inside a `<Brand>Kit` package must also compile on Linux. Wrap Apple-only files in `#if canImport(Network)` (or `Darwin`/`Security`/`HomeKit`/...) so they compile to nothing there. If that is impossible, split the codec into its own package (`Packages/Providers/<Brand>Kit/<Brand>Codec/Package.swift`, which is picked up by the `*Codec` rule) and leave the Kit package without `LINUX_OK`.
+- **macOS**: every package is tested with `swift test` on the macOS host, so `platforms:` must include a macOS version (`.macOS(.v15)`) next to `.iOS(.v18)`. A package that cannot build for macOS at all (UIKit, HomeKit-only APIs) adds an empty **`IOS_ONLY`** file and is then tested with `xcodebuild` on the iOS simulator.
+- Packages without a `.testTarget` are only built.
+- Scripts must keep LF line endings. Add `*.sh text eol=lf` to `.gitattributes` if `core.autocrlf=true` (it is on this dev machine).
+
+### Upload tool: why `xcodebuild -exportArchive` (destination `upload`)
+
+The task allowed `xcrun altool` or fastlane `pilot`. The default is neither: `xcodebuild -exportArchive` with `destination = upload` in `ExportOptions.plist`, authenticated with the same API key flags used for automatic signing. Reasons:
+
+- It is Apple's first-party path, the same one Xcode Organizer uses, and it signs and uploads in one step with the cloud-managed distribution certificate. No certificates or profiles need to be stored in secrets.
+- `altool --upload-app` is deprecated in favour of `--upload-package`. With Xcode 26 it has been reported to exit 0 on failed uploads and to pick the wrong app when bundle-id prefixes overlap (Apple Developer Forums threads 807587 and 803105).
+- fastlane `pilot` adds a Ruby/fastlane toolchain and wraps the same Apple transport. Its advantage is TestFlight metadata management (changelogs, tester groups), which we do not need yet.
+
+Fallback: run the workflow manually with `upload_tool = altool`. That exports an `.ipa` and calls `xcrun altool --upload-app ... --apiKey/--apiIssuer`, and the script checks altool's output for errors as well as its exit code.
+
+### Secrets (repo Settings > Secrets and variables > Actions > Secrets)
+
+| Secret | Required | What it is |
+|---|---|---|
+| `ASC_KEY_ID` | yes | App Store Connect API key ID (10 characters) |
+| `ASC_ISSUER_ID` | yes | Issuer ID (UUID) shown above the key list |
+| `ASC_KEY_P8` | yes | The downloaded `AuthKey_<KEYID>.p8`, **base64-encoded** on one line |
+| `APPLE_TEAM_ID` | yes | 10-character Team ID (developer.apple.com > Account > Membership details) |
+| `DEV_CERT_P12` | optional | Base64 `.p12` of an **Apple Development** certificate and its private key. Without it, every TestFlight run makes Xcode create a new development certificate named "Created via API". Add this secret if those start piling up or you hit the certificate limit |
+| `DEV_CERT_PASSWORD` | with `DEV_CERT_P12` | Password of that `.p12` |
+
+Setting them with `gh` from PowerShell in the repo folder:
+
+```powershell
+gh secret set ASC_KEY_ID      --repo Synaptikk/SmartLights --body "XXXXXXXXXX"
+gh secret set ASC_ISSUER_ID   --repo Synaptikk/SmartLights --body "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+gh secret set APPLE_TEAM_ID   --repo Synaptikk/SmartLights --body "XXXXXXXXXX"
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("$HOME\Downloads\AuthKey_XXXXXXXXXX.p8")) |
+  gh secret set ASC_KEY_P8 --repo Synaptikk/SmartLights
+```
+
+(Git Bash: `base64 -w0 AuthKey_XXXXXXXXXX.p8 | gh secret set ASC_KEY_P8 --repo Synaptikk/SmartLights`.) Then delete or safely store the `.p8`. Apple lets you download it only once.
+
+### One-time Apple setup (user)
+
+1. **Apple Developer Program** membership is active. Note the Team ID.
+2. **App ID**: in Certificates, Identifiers & Profiles > Identifiers, register explicit App ID `com.sinap.smartlights` with the capabilities **HomeKit** and **App Groups**. Create and assign the App Group `group.com.sinap.smartlights`. Automatic signing with `-allowProvisioningUpdates` can register some of these itself, but doing it by hand avoids first-run failures. Add **Multicast Networking** only after Apple approves the request.
+3. **App record**: App Store Connect > Apps > "+" > New App: platform iOS, bundle ID `com.sinap.smartlights`, any SKU (e.g. `smartlights`). Uploads fail until this record exists.
+4. **API key**: App Store Connect > Users and Access > Integrations > App Store Connect API > Team Keys > "+". Give it the **Admin** role: automatic signing must create certificates and profiles and use cloud-managed distribution certificates, which "App Manager" cannot do. Download the `.p8` and note the Key ID and Issuer ID, then set the secrets above.
+5. **TestFlight**: in the app's TestFlight tab, create an internal testing group with yourself in it and turn on automatic distribution. Install TestFlight on the iPhone.
+6. **App icon**: the asset catalog needs a 1024x1024 PNG before the first upload, or App Store Connect rejects the build (see Notes above).
+
+### Cutting a TestFlight build
+
+```sh
+git tag v0.1.0
+git push origin v0.1.0
+gh run list --workflow testflight.yml --limit 1     # then: gh run watch <run-id>
+```
+
+- `MARKETING_VERSION` (CFBundleShortVersionString) comes from the tag: `v0.1.0` becomes `0.1.0`.
+- `CURRENT_PROJECT_VERSION` (CFBundleVersion) is `<workflow run number>.<run attempt>`, e.g. `17.1`. It always increases, and re-runs stay unique.
+- Both are passed as build-setting overrides, so `Info.plist` must keep `$(MARKETING_VERSION)` and `$(CURRENT_PROJECT_VERSION)`.
+- Processing in App Store Connect takes 5-30 minutes before the build appears in TestFlight. The workflow keeps dSYMs (90 days) and logs as artifacts.
+- Ad hoc instead: Actions > TestFlight > Run workflow > `export_method = release-testing`. The `.ipa` is attached to the run. The iPhone's UDID must be registered as a device first.
+
+### Reading CI from Windows
+
+```sh
+gh run list --limit 10
+gh run view <run-id> --log-failed
+gh run download <run-id> -n app-results      # xcresult + raw xcodebuild logs
+```
+
+`.xcresult` bundles need Xcode to open, so read the `*.log` files next to them. The `--log-failed` output is usually enough.

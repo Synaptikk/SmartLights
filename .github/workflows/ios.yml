@@ -1,0 +1,103 @@
+# Apple-side CI: builds and tests every Swift package on macOS and the
+# SmartLights app on an iOS simulator. Scripts live in tools/ci/.
+#
+# Runner: Xcode 27 ships on the GitHub-hosted image labelled `xcode-27`
+# (macOS 27, arm64; "preview" as of 2026-10). The `macos-26` image only carries
+# Xcode 26.x. Override without editing this file via repository variables:
+#   MACOS_RUNNER   e.g. macos-26 once that image gains Xcode 27
+#   XCODE_VERSION  e.g. 27.2 (empty = image default Xcode)
+#   SIM_NAME       preferred simulator, e.g. "iPhone 17" (empty = auto-pick)
+name: iOS
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["**.md", "research/**", "tools/probe/**"]
+  pull_request:
+    paths-ignore: ["**.md", "research/**", "tools/probe/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  XCODE_VERSION: ${{ vars.XCODE_VERSION }}
+  SIM_NAME: ${{ vars.SIM_NAME }}
+  ARTIFACTS_DIR: ${{ github.workspace }}/artifacts
+
+jobs:
+  packages:
+    name: Swift packages (macOS)
+    runs-on: ${{ vars.MACOS_RUNNER || 'xcode-27' }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: bash tools/ci/select-xcode.sh
+
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/org.swift.swiftpm
+            Packages/**/.build
+          key: spm-pkgs-${{ runner.os }}-${{ vars.XCODE_VERSION || 'default' }}-${{ hashFiles('Packages/**/Package.swift', 'Packages/**/Package.resolved') }}
+          restore-keys: |
+            spm-pkgs-${{ runner.os }}-${{ vars.XCODE_VERSION || 'default' }}-
+
+      - name: Build and test packages
+        run: bash tools/ci/test-packages-macos.sh
+
+      - name: Upload results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-results
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  app:
+    name: App (iOS simulator)
+    runs-on: ${{ vars.MACOS_RUNNER || 'xcode-27' }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: bash tools/ci/select-xcode.sh
+
+      - name: Generate Xcode project (XcodeGen)
+        run: bash tools/ci/generate-project.sh
+
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: .ci/spm
+          key: spm-app-${{ runner.os }}-${{ hashFiles('project.yml', 'Packages/**/Package.swift', '**/Package.resolved') }}
+          restore-keys: |
+            spm-app-${{ runner.os }}-
+
+      - name: Build and test app
+        run: bash tools/ci/build-app.sh
+
+      - name: Upload xcresult
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-results
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 7

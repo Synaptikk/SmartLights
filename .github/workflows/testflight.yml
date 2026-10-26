@@ -1,0 +1,87 @@
+# Archive + upload to TestFlight on a version tag (v1.2.3), or on demand.
+# Signing: automatic, driven by an App Store Connect API key (no certificates
+# or profiles in the repo). Upload: `xcodebuild -exportArchive` with
+# destination=upload (default) or `xcrun altool` as a fallback.
+# Secrets and one-time Apple setup: docs/BUILD.md, section "CI and TestFlight".
+name: TestFlight
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      export_method:
+        description: "Export method"
+        type: choice
+        options: [app-store-connect, release-testing]
+        default: app-store-connect
+      upload:
+        description: "Upload to App Store Connect (app-store-connect only)"
+        type: boolean
+        default: true
+      upload_tool:
+        description: "Upload tool"
+        type: choice
+        options: [xcodebuild, altool]
+        default: xcodebuild
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    name: Archive and upload
+    runs-on: ${{ vars.MACOS_RUNNER || 'xcode-27' }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    env:
+      XCODE_VERSION: ${{ vars.XCODE_VERSION }}
+      ARTIFACTS_DIR: ${{ github.workspace }}/artifacts
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: bash tools/ci/select-xcode.sh
+
+      - name: Generate Xcode project (XcodeGen)
+        run: bash tools/ci/generate-project.sh
+
+      - name: Archive, export, upload
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          DEV_CERT_P12: ${{ secrets.DEV_CERT_P12 }}
+          DEV_CERT_PASSWORD: ${{ secrets.DEV_CERT_PASSWORD }}
+          CODE_SIGN_ENTITLEMENTS: ${{ vars.CODE_SIGN_ENTITLEMENTS }}
+          EXPORT_METHOD: ${{ inputs.export_method || 'app-store-connect' }}
+          UPLOAD: ${{ github.event_name == 'push' && 'true' || inputs.upload && 'true' || 'false' }}
+          UPLOAD_TOOL: ${{ inputs.upload_tool || 'xcodebuild' }}
+        run: bash tools/ci/testflight.sh
+
+      - name: Upload .ipa / logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testflight-${{ github.ref_name }}-${{ github.run_number }}
+          path: |
+            artifacts/export/
+            artifacts/*.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload dSYMs
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsyms-${{ github.ref_name }}-${{ github.run_number }}
+          path: artifacts/SmartLights.xcarchive/dSYMs/
+          if-no-files-found: ignore
+          retention-days: 90

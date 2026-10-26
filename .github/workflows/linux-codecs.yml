@@ -1,0 +1,80 @@
+# Linux CI for pure-Swift packages (codecs, LightCore). A package is included
+# when tools/ci/find-linux-packages.sh selects it: a LINUX_OK marker file in the
+# package directory, a directory name ending in "Codec", or LightCore.
+# Runs on swift:6.1 (project floor, CLAUDE.md) and the newest 6.x image.
+name: Linux codecs
+
+on:
+  push:
+    branches: [main]
+    paths: ["Packages/**", "tools/ci/**", ".github/workflows/linux-codecs.yml"]
+  pull_request:
+    paths: ["Packages/**", "tools/ci/**", ".github/workflows/linux-codecs.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linux-codecs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    name: Find Linux packages
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.find.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: find
+        shell: bash
+        run: |
+          pkgs="$(bash tools/ci/find-linux-packages.sh --json)"
+          echo "Linux packages: $pkgs"
+          echo "packages=$pkgs" >> "$GITHUB_OUTPUT"
+
+  test:
+    name: ${{ matrix.package }} (swift ${{ matrix.swift }})
+    needs: discover
+    if: needs.discover.outputs.packages != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: swift:${{ matrix.swift }}
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.discover.outputs.packages) }}
+        swift: ["6.1", "6.4"]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache .build
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.package }}/.build
+          key: linux-${{ matrix.swift }}-${{ matrix.package }}-${{ hashFiles(format('{0}/Package.swift', matrix.package), format('{0}/Package.resolved', matrix.package)) }}
+          restore-keys: |
+            linux-${{ matrix.swift }}-${{ matrix.package }}-
+
+      - name: swift build && swift test
+        run: bash tools/ci/linux-package-test.sh "${{ matrix.package }}"
+
+  # Single stable check name for branch protection, independent of the matrix.
+  linux-ok:
+    name: Linux codecs OK
+    needs: [discover, test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          d="${{ needs.discover.result }}"
+          r="${{ needs.test.result }}"
+          echo "discover: $d, test: $r"
+          [ "$d" = "success" ] || exit 1
+          [ "$r" = "success" ] || [ "$r" = "skipped" ]
