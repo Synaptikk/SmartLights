@@ -1,9 +1,22 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(AppModel.self) private var model
+
     var body: some View {
         NavigationStack {
             List {
+                Section("Home") {
+                    NavigationLink {
+                        RoomsView()
+                    } label: {
+                        LabeledContent {
+                            Text("\(model.rooms.count)")
+                        } label: {
+                            Label("Rooms", systemImage: "square.split.2x2")
+                        }
+                    }
+                }
                 Section("Support") {
                     NavigationLink {
                         DiagnosticsView()
@@ -31,6 +44,9 @@ struct SettingsView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     SettingsView()
+        .environment(PreviewRegistry.model())
 }
+#endif

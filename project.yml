@@ -36,6 +36,10 @@ packages:
     path: Packages/LightCore
   NetKit:
     path: Packages/NetKit
+  Onboarding:
+    path: Packages/Onboarding
+  HomeKitProvider:
+    path: Packages/Providers/HomeKitProvider
 
 targets:
   SmartLights:
@@ -57,6 +61,10 @@ targets:
         product: LightCore
       - package: NetKit
         product: NetKit
+      - package: Onboarding
+        product: Onboarding
+      - package: HomeKitProvider
+        product: HomeKitProvider
       - sdk: HomeKit.framework
     settings:
       base:
