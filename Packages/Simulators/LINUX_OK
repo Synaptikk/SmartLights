@@ -1,0 +1,1 @@
+Builds and tests in the swift:6.1 Linux container (docker run --rm -v "$PWD":/src -w /src swift:6.1 swift test).
