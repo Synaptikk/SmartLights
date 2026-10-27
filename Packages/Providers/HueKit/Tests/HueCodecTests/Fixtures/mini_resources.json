@@ -1,0 +1,160 @@
+{
+  "errors": [],
+  "data": [
+    {
+      "id": "b0000000-0000-4000-8000-000000000001",
+      "type": "bridge",
+      "bridge_id": "001788fffe4a2b3c",
+      "owner": { "rid": "d0000000-0000-4000-8000-0000000000b0", "rtype": "device" },
+      "time_zone": { "time_zone": "Europe/Amsterdam" }
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000001",
+      "type": "device",
+      "metadata": { "name": "Sofa lamp", "archetype": "sultan_bulb" },
+      "product_data": { "model_id": "LCA001", "manufacturer_name": "Signify Netherlands B.V.", "product_name": "Hue color lamp", "software_version": "1.122.2" },
+      "services": [
+        { "rid": "10000000-0000-4000-8000-000000000001", "rtype": "light" },
+        { "rid": "20000000-0000-4000-8000-000000000001", "rtype": "zigbee_connectivity" }
+      ]
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000002",
+      "type": "device",
+      "metadata": { "name": "Desk lamp", "archetype": "sultan_bulb" },
+      "product_data": { "model_id": "TS0505B", "manufacturer_name": "_TZ3210_abc", "product_name": "Extended color light" },
+      "services": [
+        { "rid": "10000000-0000-4000-8000-000000000002", "rtype": "light" },
+        { "rid": "20000000-0000-4000-8000-000000000002", "rtype": "zigbee_connectivity" }
+      ]
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000003",
+      "type": "device",
+      "metadata": { "name": "Hall bulb", "archetype": "classic_bulb" },
+      "product_data": { "model_id": "LWA001", "manufacturer_name": "Signify Netherlands B.V." },
+      "services": [ { "rid": "10000000-0000-4000-8000-000000000003", "rtype": "light" } ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000001",
+      "id_v1": "/lights/1",
+      "type": "light",
+      "owner": { "rid": "d0000000-0000-4000-8000-000000000001", "rtype": "device" },
+      "metadata": { "name": "Sofa lamp", "archetype": "sultan_bulb", "function": "mixed" },
+      "on": { "on": true },
+      "dimming": { "brightness": 80.0, "min_dim_level": 0.2 },
+      "color_temperature": { "mirek": null, "mirek_valid": false, "mirek_schema": { "mirek_minimum": 153, "mirek_maximum": 500 } },
+      "color": { "xy": { "x": 0.4573, "y": 0.41 }, "gamut_type": "C",
+                 "gamut": { "red": { "x": 0.6915, "y": 0.3083 }, "green": { "x": 0.17, "y": 0.7 }, "blue": { "x": 0.1532, "y": 0.0475 } } },
+      "effects": { "effect_values": ["no_effect", "candle", "fire"], "status": "no_effect", "status_values": ["no_effect", "candle", "fire"] },
+      "dynamics": { "status": "none", "speed": 0.0, "speed_valid": false },
+      "mode": "normal",
+      "some_future_field": { "nested": [1, 2, 3] }
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000002",
+      "type": "light",
+      "owner": { "rid": "d0000000-0000-4000-8000-000000000002", "rtype": "device" },
+      "metadata": { "name": "Desk lamp" },
+      "on": { "on": false },
+      "dimming": { "brightness": 100.0 },
+      "color_temperature": { "mirek": 366, "mirek_valid": true, "mirek_schema": { "mirek_minimum": 153, "mirek_maximum": 454 } },
+      "color": { "xy": { "x": 0.45, "y": 0.41 }, "gamut_type": "other",
+                 "gamut": { "red": { "x": 0.68, "y": 0.31 }, "green": { "x": 0.11, "y": 0.82 }, "blue": { "x": 0.13, "y": 0.04 } } }
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000003",
+      "type": "light",
+      "owner": { "rid": "d0000000-0000-4000-8000-000000000003", "rtype": "device" },
+      "metadata": { "name": "Hall bulb" },
+      "on": { "on": true },
+      "dimming": { "brightness": 50.0, "min_dim_level": 1.0 }
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000001",
+      "type": "zigbee_connectivity",
+      "owner": { "rid": "d0000000-0000-4000-8000-000000000001", "rtype": "device" },
+      "status": "connected",
+      "mac_address": "00:17:88:01:00:00:00:01"
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000002",
+      "type": "zigbee_connectivity",
+      "owner": { "rid": "d0000000-0000-4000-8000-000000000002", "rtype": "device" },
+      "status": "connectivity_issue"
+    },
+    {
+      "id": "30000000-0000-4000-8000-000000000001",
+      "type": "room",
+      "metadata": { "name": "Living room", "archetype": "living_room" },
+      "children": [
+        { "rid": "d0000000-0000-4000-8000-000000000001", "rtype": "device" },
+        { "rid": "d0000000-0000-4000-8000-000000000002", "rtype": "device" }
+      ],
+      "services": [ { "rid": "40000000-0000-4000-8000-000000000001", "rtype": "grouped_light" } ]
+    },
+    {
+      "id": "30000000-0000-4000-8000-000000000002",
+      "type": "room",
+      "metadata": { "name": "Hallway", "archetype": "hallway" },
+      "children": [ { "rid": "d0000000-0000-4000-8000-000000000003", "rtype": "device" } ],
+      "services": [ { "rid": "40000000-0000-4000-8000-000000000002", "rtype": "grouped_light" } ]
+    },
+    {
+      "id": "30000000-0000-4000-8000-000000000003",
+      "type": "zone",
+      "metadata": { "name": "Reading", "archetype": "reading" },
+      "children": [
+        { "rid": "10000000-0000-4000-8000-000000000001", "rtype": "light" },
+        { "rid": "10000000-0000-4000-8000-000000000003", "rtype": "light" }
+      ],
+      "services": [ { "rid": "40000000-0000-4000-8000-000000000003", "rtype": "grouped_light" } ]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000001",
+      "type": "grouped_light",
+      "owner": { "rid": "30000000-0000-4000-8000-000000000001", "rtype": "room" },
+      "on": { "on": true },
+      "dimming": { "brightness": 80.0 }
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000002",
+      "type": "grouped_light",
+      "owner": { "rid": "30000000-0000-4000-8000-000000000002", "rtype": "room" },
+      "on": { "on": true }
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000003",
+      "type": "grouped_light",
+      "owner": { "rid": "30000000-0000-4000-8000-000000000003", "rtype": "zone" },
+      "on": { "on": true }
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000009",
+      "type": "grouped_light",
+      "owner": { "rid": "50000000-0000-4000-8000-000000000009", "rtype": "bridge_home" },
+      "on": { "on": true }
+    },
+    {
+      "id": "60000000-0000-4000-8000-000000000001",
+      "type": "scene",
+      "metadata": { "name": "Relax" },
+      "group": { "rid": "30000000-0000-4000-8000-000000000001", "rtype": "room" },
+      "actions": [
+        { "target": { "rid": "10000000-0000-4000-8000-000000000001", "rtype": "light" },
+          "action": { "on": { "on": true }, "dimming": { "brightness": 56.3 }, "color_temperature": { "mirek": 447 } } },
+        { "target": { "rid": "10000000-0000-4000-8000-000000000002", "rtype": "light" },
+          "action": { "on": { "on": true }, "dimming": { "brightness": 56.3 }, "color_temperature": { "mirek": 447 } } }
+      ],
+      "auto_dynamic": false,
+      "speed": 0.6,
+      "status": { "active": "inactive" }
+    },
+    {
+      "id": "70000000-0000-4000-8000-000000000001",
+      "type": "motion",
+      "owner": { "rid": "d0000000-0000-4000-8000-000000000099", "rtype": "device" },
+      "enabled": true
+    }
+  ]
+}

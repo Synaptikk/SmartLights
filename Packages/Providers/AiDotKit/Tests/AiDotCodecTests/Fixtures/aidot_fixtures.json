@@ -1,0 +1,820 @@
+{
+ "apiUrlUS": "https://prod-us-api.arnoo.com/v35",
+ "appId": "1383974540041977857",
+ "countries": [
+  {
+   "id": "AL",
+   "name": "Albania",
+   "region": "eu"
+  },
+  {
+   "id": "AG",
+   "name": "Antigua and Barbuda",
+   "region": "us"
+  },
+  {
+   "id": "AR",
+   "name": "Argentina",
+   "region": "us"
+  },
+  {
+   "id": "AT",
+   "name": "Austria",
+   "region": "eu"
+  },
+  {
+   "id": "AI",
+   "name": "Anguilla",
+   "region": "us"
+  },
+  {
+   "id": "AF",
+   "name": "Afghanistan",
+   "region": "jp"
+  },
+  {
+   "id": "AM",
+   "name": "Armenia",
+   "region": "jp"
+  },
+  {
+   "id": "AZ",
+   "name": "Azerbaijan",
+   "region": "jp"
+  },
+  {
+   "id": "AU",
+   "name": "Australia",
+   "region": "jp"
+  },
+  {
+   "id": "BO",
+   "name": "Bolivia",
+   "region": "us"
+  },
+  {
+   "id": "BR",
+   "name": "Brazil",
+   "region": "us"
+  },
+  {
+   "id": "BG",
+   "name": "Bulgaria",
+   "region": "eu"
+  },
+  {
+   "id": "BS",
+   "name": "Bahamas",
+   "region": "us"
+  },
+  {
+   "id": "BE",
+   "name": "Belgium",
+   "region": "eu"
+  },
+  {
+   "id": "BZ",
+   "name": "Belize",
+   "region": "us"
+  },
+  {
+   "id": "BB",
+   "name": "Barbados",
+   "region": "us"
+  },
+  {
+   "id": "BM",
+   "name": "Bermuda",
+   "region": "us"
+  },
+  {
+   "id": "BN",
+   "name": "Brunei",
+   "region": "jp"
+  },
+  {
+   "id": "BH",
+   "name": "Bahrain",
+   "region": "jp"
+  },
+  {
+   "id": "BD",
+   "name": "Bangladesh",
+   "region": "jp"
+  },
+  {
+   "id": "BT",
+   "name": "Bhutan",
+   "region": "jp"
+  },
+  {
+   "id": "CA",
+   "name": "Canada",
+   "region": "us"
+  },
+  {
+   "id": "CL",
+   "name": "Chile",
+   "region": "us"
+  },
+  {
+   "id": "CO",
+   "name": "Colombia",
+   "region": "us"
+  },
+  {
+   "id": "CR",
+   "name": "Costa Rica",
+   "region": "us"
+  },
+  {
+   "id": "CU",
+   "name": "Cuba",
+   "region": "us"
+  },
+  {
+   "id": "CZ",
+   "name": "Czech Republic",
+   "region": "eu"
+  },
+  {
+   "id": "HR",
+   "name": "Croatia",
+   "region": "eu"
+  },
+  {
+   "id": "KY",
+   "name": "Cayman Islands",
+   "region": "us"
+  },
+  {
+   "id": "KH",
+   "name": "Cambodia",
+   "region": "jp"
+  },
+  {
+   "id": "CY",
+   "name": "Cyprus",
+   "region": "jp"
+  },
+  {
+   "id": "DK",
+   "name": "Denmark",
+   "region": "eu"
+  },
+  {
+   "id": "DO",
+   "name": "Dominican Republic",
+   "region": "us"
+  },
+  {
+   "id": "EC",
+   "name": "Ecuador",
+   "region": "us"
+  },
+  {
+   "id": "SV",
+   "name": "El Salvador",
+   "region": "us"
+  },
+  {
+   "id": "EE",
+   "name": "Estonia",
+   "region": "eu"
+  },
+  {
+   "id": "FI",
+   "name": "Finland",
+   "region": "eu"
+  },
+  {
+   "id": "FR",
+   "name": "France",
+   "region": "eu"
+  },
+  {
+   "id": "GF",
+   "name": "French Guiana",
+   "region": "us"
+  },
+  {
+   "id": "GR",
+   "name": "Greece",
+   "region": "eu"
+  },
+  {
+   "id": "GT",
+   "name": "Guatemala",
+   "region": "us"
+  },
+  {
+   "id": "GY",
+   "name": "Guyana",
+   "region": "us"
+  },
+  {
+   "id": "DE",
+   "name": "Germany",
+   "region": "eu"
+  },
+  {
+   "id": "GD",
+   "name": "Grenada",
+   "region": "us"
+  },
+  {
+   "id": "GE",
+   "name": "Georgia",
+   "region": "jp"
+  },
+  {
+   "id": "HT",
+   "name": "Haiti",
+   "region": "us"
+  },
+  {
+   "id": "HN",
+   "name": "Honduras",
+   "region": "us"
+  },
+  {
+   "id": "HU",
+   "name": "Hungary",
+   "region": "eu"
+  },
+  {
+   "id": "IS",
+   "name": "Iceland",
+   "region": "eu"
+  },
+  {
+   "id": "IE",
+   "name": "Ireland",
+   "region": "eu"
+  },
+  {
+   "id": "IT",
+   "name": "Italy",
+   "region": "eu"
+  },
+  {
+   "id": "IN",
+   "name": "India",
+   "region": "jp"
+  },
+  {
+   "id": "ID",
+   "name": "Indonesia",
+   "region": "jp"
+  },
+  {
+   "id": "IR",
+   "name": "Iran",
+   "region": "jp"
+  },
+  {
+   "id": "IQ",
+   "name": "Iraq",
+   "region": "jp"
+  },
+  {
+   "id": "IL",
+   "name": "Israel",
+   "region": "eu"
+  },
+  {
+   "id": "JM",
+   "name": "Jamaica",
+   "region": "us"
+  },
+  {
+   "id": "JP",
+   "name": "Japan",
+   "region": "jp"
+  },
+  {
+   "id": "JO",
+   "name": "Jordan",
+   "region": "jp"
+  },
+  {
+   "id": "KZ",
+   "name": "Kazakhstan",
+   "region": "jp"
+  },
+  {
+   "id": "KR",
+   "name": "Korea",
+   "region": "jp"
+  },
+  {
+   "id": "KW",
+   "name": "Kuwait",
+   "region": "jp"
+  },
+  {
+   "id": "KG",
+   "name": "Kyrgyzstan",
+   "region": "jp"
+  },
+  {
+   "id": "LV",
+   "name": "Latvia",
+   "region": "eu"
+  },
+  {
+   "id": "LT",
+   "name": "Lithuania",
+   "region": "eu"
+  },
+  {
+   "id": "LU",
+   "name": "Luxembourg",
+   "region": "eu"
+  },
+  {
+   "id": "LI",
+   "name": "Liechtenstein",
+   "region": "eu"
+  },
+  {
+   "id": "LA",
+   "name": "Laos",
+   "region": "jp"
+  },
+  {
+   "id": "LB",
+   "name": "Lebanon",
+   "region": "jp"
+  },
+  {
+   "id": "MT",
+   "name": "Malta",
+   "region": "eu"
+  },
+  {
+   "id": "MX",
+   "name": "Mexico",
+   "region": "us"
+  },
+  {
+   "id": "MD",
+   "name": "Moldova",
+   "region": "eu"
+  },
+  {
+   "id": "MC",
+   "name": "Monaco",
+   "region": "eu"
+  },
+  {
+   "id": "MS",
+   "name": "Montserrat",
+   "region": "us"
+  },
+  {
+   "id": "ME",
+   "name": "Montenegro",
+   "region": "eu"
+  },
+  {
+   "id": "MY",
+   "name": "Malaysia",
+   "region": "jp"
+  },
+  {
+   "id": "MV",
+   "name": "Maldives",
+   "region": "jp"
+  },
+  {
+   "id": "MN",
+   "name": "Mongolia",
+   "region": "jp"
+  },
+  {
+   "id": "MM",
+   "name": "Myanmar",
+   "region": "jp"
+  },
+  {
+   "id": "NL",
+   "name": "Netherlands",
+   "region": "eu"
+  },
+  {
+   "id": "NI",
+   "name": "Nicaragua",
+   "region": "us"
+  },
+  {
+   "id": "NO",
+   "name": "Norway",
+   "region": "eu"
+  },
+  {
+   "id": "MK",
+   "name": "North Macedonia",
+   "region": "eu"
+  },
+  {
+   "id": "NZ",
+   "name": "New Zealand",
+   "region": "jp"
+  },
+  {
+   "id": "NP",
+   "name": "Nepal",
+   "region": "jp"
+  },
+  {
+   "id": "KP",
+   "name": "North Korea",
+   "region": "jp"
+  },
+  {
+   "id": "OM",
+   "name": "Oman",
+   "region": "jp"
+  },
+  {
+   "id": "PA",
+   "name": "Panama",
+   "region": "us"
+  },
+  {
+   "id": "PY",
+   "name": "Paraguay",
+   "region": "us"
+  },
+  {
+   "id": "PE",
+   "name": "Peru",
+   "region": "us"
+  },
+  {
+   "id": "PT",
+   "name": "Portugal",
+   "region": "eu"
+  },
+  {
+   "id": "PK",
+   "name": "Pakistan",
+   "region": "jp"
+  },
+  {
+   "id": "PS",
+   "name": "Palestine",
+   "region": "jp"
+  },
+  {
+   "id": "PH",
+   "name": "Philippines",
+   "region": "jp"
+  },
+  {
+   "id": "PL",
+   "name": "Poland",
+   "region": "eu"
+  },
+  {
+   "id": "QA",
+   "name": "Qatar",
+   "region": "jp"
+  },
+  {
+   "id": "RO",
+   "name": "Romania",
+   "region": "eu"
+  },
+  {
+   "id": "RU",
+   "name": "Russia",
+   "region": "eu"
+  },
+  {
+   "id": "SM",
+   "name": "San Marino",
+   "region": "eu"
+  },
+  {
+   "id": "SI",
+   "name": "Slovenia",
+   "region": "eu"
+  },
+  {
+   "id": "ES",
+   "name": "Spain",
+   "region": "eu"
+  },
+  {
+   "id": "LC",
+   "name": "St.Lucia",
+   "region": "us"
+  },
+  {
+   "id": "SR",
+   "name": "Suriname",
+   "region": "us"
+  },
+  {
+   "id": "SE",
+   "name": "Sweden",
+   "region": "eu"
+  },
+  {
+   "id": "SK",
+   "name": "Slovakia",
+   "region": "eu"
+  },
+  {
+   "id": "RS",
+   "name": "Serbia",
+   "region": "eu"
+  },
+  {
+   "id": "KN",
+   "name": "St.Kitts and Nevis",
+   "region": "us"
+  },
+  {
+   "id": "VC",
+   "name": "St.Vincent and the Grenadines",
+   "region": "us"
+  },
+  {
+   "id": "SA",
+   "name": "Saudi Arabia",
+   "region": "jp"
+  },
+  {
+   "id": "SG",
+   "name": "Singapore",
+   "region": "jp"
+  },
+  {
+   "id": "LK",
+   "name": "Sri Lanka",
+   "region": "jp"
+  },
+  {
+   "id": "SY",
+   "name": "Syria",
+   "region": "jp"
+  },
+  {
+   "id": "CH",
+   "name": "Switzerland",
+   "region": "eu"
+  },
+  {
+   "id": "TT",
+   "name": "Trinidad and Tobago",
+   "region": "us"
+  },
+  {
+   "id": "TC",
+   "name": "Turks & Caicos",
+   "region": "us"
+  },
+  {
+   "id": "TJ",
+   "name": "Tajikistan",
+   "region": "jp"
+  },
+  {
+   "id": "TH",
+   "name": "Thailand",
+   "region": "jp"
+  },
+  {
+   "id": "TG",
+   "name": "Togo",
+   "region": "jp"
+  },
+  {
+   "id": "TR",
+   "name": "Turkey",
+   "region": "eu"
+  },
+  {
+   "id": "TM",
+   "name": "Turkmenistan",
+   "region": "jp"
+  },
+  {
+   "id": "UA",
+   "name": "Ukraine",
+   "region": "eu"
+  },
+  {
+   "id": "GB",
+   "name": "United Kingdom",
+   "region": "eu"
+  },
+  {
+   "id": "US",
+   "name": "United States",
+   "region": "us"
+  },
+  {
+   "id": "UY",
+   "name": "Uruguay",
+   "region": "us"
+  },
+  {
+   "id": "AE",
+   "name": "United Arab Emirates",
+   "region": "jp"
+  },
+  {
+   "id": "UZ",
+   "name": "Uzbekistan",
+   "region": "jp"
+  },
+  {
+   "id": "VE",
+   "name": "Venezuela",
+   "region": "us"
+  },
+  {
+   "id": "VG",
+   "name": "Virgin Islands",
+   "region": "us"
+  },
+  {
+   "id": "VN",
+   "name": "Vietnam",
+   "region": "jp"
+  },
+  {
+   "id": "YE",
+   "name": "Yemen",
+   "region": "jp"
+  }
+ ],
+ "discoveryRequest": {
+  "cipherHex": "69238ee1e4a220dc6c9a34300aabf84b3970845c46fa8caedc20e60002257b19fda70bf5be2b0d08d30da0dbc089860cecf3cfa1eee71daa5a8e9237f08a568cacef072c8a81c2325d918e11eb7b1e9b48adeb02545997a3c3364c5826b437c70ce1feb1f4db8af0f363ddd9cd0a546f1e101856645ae6af028e0c04848e7d67defdd2d98c7d3717fe83f561c2da7d81c83c0b8e86fd7246e13af42a9c743623f285bcda7c6d95cffbfde3c07b981e07e02dce605804ca64e02b48352d236b1f16dfde43aeb81f348f935fdc5293e5fd97fe7642eef86acfb636231bd5ab5d4bd83fa9871996ea17c9d7f95ca715a456",
+  "json": "{\"protocolVer\": \"2.0.0\", \"service\": \"device\", \"method\": \"devDiscoveryReq\", \"seq\": \"475200124\", \"srcAddr\": \"0.1840000000000000001\", \"tst\": 1761475200123, \"payload\": {\"extends\": {}, \"localCtrFlag\": 1, \"timestamp\": \"1761475200123\"}}",
+  "seq": "475200124",
+  "tst": 1761475200123,
+  "userId": "1840000000000000001"
+ },
+ "discoveryResponse": {
+  "cipherHex": "69238ee1e4a220dc6c9a34300aabf84b3970845c46fa8caedc20e60002257b19fda70bf5be2b0d08d30da0dbc089860cecf3cfa1eee71daa5a8e9237f08a568c9e60f4b6f5dba40be5bdf74878efaeed48adeb02545997a3c3364c5826b437c711f5da5cbf4c70e05a375096f0b62c320a01bda943c2e1c59384cc91152feefa6e95372a83dcfe7b4a38792a4879270ae408ea73d1b5eb18644fb95f2f88c3f0145b3481eed5648c2bcd1709e96882b30258f4c9c5a96495d38a253e39e413ce4e3c295e73ddf83c0331871cd10259eb4015ad46f6193eb406a2d8800c53ffff4b96f4838b605ac2c873d6b403dea2d107ce44081b049ed27ce679674e7db68b7ede1729496ee101fbaf438def2379b980c05c06ed5024fd5709713f0c4d1d82f3f2cd664331ebe134703d064a4fa2eb00551b8433df3d58eca5bca2ab7294235a6715a8f2b90fc4512c3859d207350c61a1aaa978c1d76e4e76b51a46aa3acbcffba6f86c384dbd8bb59db7c63a54b674088da629b4fdb160689ac58847057ba9d8bc28136a1a85d26554f95f66e758d95723b7a3063797c073c33d3f2e34971ced67d45c656778da92531c36c184fa5ca9762bf8324db5fa7cd863f140835204e89ba7ee8ed2ddcfc918856ef52fe8103f563dde883ea4ac5b79ec20346895",
+  "json": "{\"protocolVer\": \"2.0.0\", \"service\": \"device\", \"method\": \"devDiscoveryRsp\", \"seq\": \"475200124\", \"srcAddr\": \"8a040e2233a243e7a07eb6a1b7a210a7\", \"ack\": {\"code\": 200, \"tst\": \"1761475200200\"}, \"payload\": {\"ip\": \"192.168.1.42\", \"mac\": \"a4:c1:38:00:00:01\", \"devId\": \"8a040e2233a243e7a07eb6a1b7a210a7\", \"productModel\": \"LK.light.A001493\", \"bindFlag\": 1, \"conMode\": 0, \"lanMode\": 1, \"wifiMode\": 1, \"wifiBand\": 0, \"version\": 2, \"extends\": {\"srvHost\": \"prod-us-mqtt.arnoo.com\"}}}"
+ },
+ "errorCodes": {
+  "LOGIN_INVALID": 21025,
+  "TOKEN_EXPIRED": 21026,
+  "USER_PWD_INCORRECT": 560080
+ },
+ "getDevAttrD0006": {
+  "frameHex": "1eed0001000001603eaa7affaa302337aba05dea05bcdd08802ac123fc099cd48a605ff090602b3e8045001c922f92d2c71b6ffb1cfd692ed3e71f8082e7936267f2070047b06050f7ca6111b236287d9971203ea11d97c9403a5be6632c59c7030cd1b81d2e3231f716cfcff86bb1fd4610f033e88223ff9034de97632cbed75232dd2309caa52bc90aa646457fb38b9b1fa4e4fc2be8590514200a7bcdf4a6000390ad6c806e625031b9f5af23a7a2bc5347c9a195cb47691658234448e79949e542ee271248d61169514a7cfe3579c3650cba6581054843320d4611ed813adfdc28bfbc69fa59561ed29f6043aa9419e4a664d568a52627f21504b81bdea4e46690a6444317eb5108eb7abc4952a7639bb31c2b3892cf4267b7cfb493f66c59401a345888d2aa92ae41bc3020cc4d3eab21eeb58e860bae8a3170a090019435e55901917fad418285cb432379a39a067d9a0ec0f1a015a5a33c4e31f33965a0727be0e1f06e55",
+  "json": "{\"method\": \"getDevAttrReq\", \"service\": \"device\", \"clientId\": \"\", \"srcAddr\": \"0.1840000000000000001\", \"seq\": \"ha9300005\", \"payload\": {\"devId\": \"\", \"parentId\": \"\", \"userId\": \"\", \"password\": \"\", \"attr\": [\"OnOff\", \"Dimming\", \"RGBW\", \"CCT\"], \"channel\": \"tcp\", \"ascNumber\": 2}, \"tst\": 1761475200123, \"deviceId\": \"8a040e2233a243e7a07eb6a1b7a210a7\"}"
+ },
+ "getDevAttrEmpty": {
+  "frameHex": "1eed0001000001403eaa7affaa302337aba05dea05bcdd08802ac123fc099cd48a605ff090602b3e8045001c922f92d2c71b6ffb1cfd692ed3e71f8082e7936267f2070047b06050f7ca6111b236287d9971203ea11d97c9403a5be6632c59c7030cd1b81d2e3231f716cfcff86bb1fd4610f033e88223ff16e1dc4ae7a15c512f145268cc3a6145c90aa646457fb38b9b1fa4e4fc2be8590514200a7bcdf4a6000390ad6c806e625031b9f5af23a7a2bc5347c9a195cb47691658234448e79949e542ee271248d6b4e39f50044358a04060ae3a58ef6ecb0fe1c225b68d9fbfdf896f7024658109ee28b66689b3ad587398f87f182b2ad967686b91dde4263ccb45df3ee8ed8de0bd3912712ffd80e856854d3ef612e1baf12ab5f02927e07b9549a330519306e9607cd155ca44d5de8a0f9e5f2010eee68d2c65833c6d3e01b8704a4933da949e",
+  "json": "{\"method\": \"getDevAttrReq\", \"service\": \"device\", \"clientId\": \"\", \"srcAddr\": \"0.1840000000000000001\", \"seq\": \"ha9300004\", \"payload\": {\"devId\": \"\", \"parentId\": \"\", \"userId\": \"\", \"password\": \"\", \"attr\": [], \"channel\": \"tcp\", \"ascNumber\": 2}, \"tst\": 1761475200123, \"deviceId\": \"8a040e2233a243e7a07eb6a1b7a210a7\"}"
+ },
+ "keys": [
+  {
+   "aesKey": "abc123",
+   "keyHex": "61626331323300000000000000000000"
+  },
+  {
+   "aesKey": "0123456789abcdef",
+   "keyHex": "30313233343536373839616263646566"
+  },
+  {
+   "aesKey": "0123456789abcdef01234567",
+   "keyHex": "303132333435363738396162636465663031323334353637"
+  }
+ ],
+ "loginFrame": {
+  "aesKey": "0123456789abcdef",
+  "frameHex": "1eed0001000001209a7227c21847df9b5d8151d10bdb0eee24d8839704cc8b2d5812f3ab998cbfc2a3e2dc457dbe9fda4a96b801f28fdbdf5c8b494a2021f2b664ca6747c6b9f75c3643faadc5dcbc3275ed7dcc139acf03b70a0dc2afdb3734bb640d0242e75b6e350f614ef7837e18f2af31f9aea46ed0771e0abf60be5db1c3bbeb9adc5ea89e693435aae20d799a9dd3fb194cb42c492df4b09f127770b5df07bb893ae5eac5a2d8a540a1fca666351bc017293541d5ca77dd558a02337a982d1485af5068e54654bb76ba883354811beca061848d7c633cee05bb6ecb79d16c3d30db64c6669afe6aeba541fb9909b2604e0bdfe8ffc239cb8f427f5e13573d647d5d565b25fb5d497efe67176b08a02f2f40bb63461ea011f6f90e51aa9b9d71d164292750",
+  "json": "{\"service\": \"device\", \"method\": \"loginReq\", \"seq\": \"475200123\", \"srcAddr\": \"1840000000000000001\", \"deviceId\": \"8a040e2233a243e7a07eb6a1b7a210a7\", \"payload\": {\"userId\": \"1840000000000000001\", \"password\": \"devpass-0001\", \"timestamp\": \"2026-10-26 12:34:56.789012\", \"ascNumber\": 1}}",
+  "keyHex": "30313233343536373839616263646566"
+ },
+ "pingFrame": {
+  "frameHex": "1eed0002000000604f32fd1bf6037331faf01e2f3bc2038bc5c50f61925a8a53eacd7d3ac54e1a8220fc050d49d270852e090dae05173fb800aef8f73391d12beb391a4674a5dd8f6cf8a9a997a81e00f1394b04c0ef9e8c892743ada3de693a826779ad334c0f33",
+  "json": "{\"service\": \"test\", \"method\": \"pingreq\", \"seq\": \"123456\", \"srcAddr\": \"123456\", \"payload\": {}}"
+ },
+ "publicKeyPem": "\n-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCtQAnPCi8ksPnS1Du6z96PsKfN\np2Gp/f/bHwlrAdplbX3p7/TnGpnbJGkLq8uRxf6cw+vOthTsZjkPCF7CatRvRnTj\nc9fcy7yE0oXa5TloYyXD6GkxgftBbN/movkJJGQCc7gFavuYoAdTRBOyQoXBtm0m\nkXMSjXOldI/290b9BQIDAQAB\n-----END PUBLIC KEY-----\n",
+ "rgbw": [
+  {
+   "packed": -16777216,
+   "rgbw": [
+    255,
+    0,
+    0,
+    0
+   ],
+   "unpacked": [
+    255,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "packed": 65280,
+   "rgbw": [
+    0,
+    0,
+    255,
+    0
+   ],
+   "unpacked": [
+    0,
+    0,
+    255,
+    0
+   ]
+  },
+  {
+   "packed": -2143281136,
+   "rgbw": [
+    128,
+    64,
+    32,
+    16
+   ],
+   "unpacked": [
+    128,
+    64,
+    32,
+    16
+   ]
+  },
+  {
+   "packed": 2147483647,
+   "rgbw": [
+    127,
+    255,
+    255,
+    255
+   ],
+   "unpacked": [
+    127,
+    255,
+    255,
+    255
+   ]
+  },
+  {
+   "packed": -1,
+   "rgbw": [
+    255,
+    255,
+    255,
+    255
+   ],
+   "unpacked": [
+    255,
+    255,
+    255,
+    255
+   ]
+  },
+  {
+   "packed": 0,
+   "rgbw": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "unpacked": [
+    255,
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "setDevAttrFull": {
+  "attr": {
+   "Dimming": 40,
+   "OnOff": 1,
+   "RGBW": -8388598
+  },
+  "frameHex": "1eed0001000001e0f62b636f76f6ea4483c61a2e8d7408be802ac123fc099cd48a605ff090602b3e8045001c922f92d2c71b6ffb1cfd692e8988c6da210889c7ccda43c3e90d01d52dc3832ddd890f5322f6e7f4cfe0efa85751826fe166b6f6665aa404f79cfda5c58198272e2ff41719e583f7899eec55c95d5fcfb30585c9aafa9192ee3c12a9bf7261b623c60c44572422070052d8dd95dd98cd44f488b9ac347ead746bc13048485c0359f1afb3146c8eebb0fb338888ca1e73b8f72f0bfb403b401ea704b6c904d4b85684bf4a84ba9bc21c2a508448485c0359f1afb3146c8eebb0fb338888ca1e73b8f72f0bfb403b401ea704b681afd0dac22e6804d74c1afe5aa1acd9f01ad87f622879f4ebe9d2765670be2ac8f50ef870d24c4aa979adf16ad1b7942e1fa7e31f89a02265e6a24fb769ae20ee02d039be68b12dae69420765d19c3f654acc7de71d9854c4400ac2487d906d8c1926a290ddc5ba5f39551b4fd0ab09dcf2e9efc944dd13a733a59dab67ae5a0fe1c225b68d9fbfdf896f7024658109c6668adeed1d54381df4cc88c12e157267686b91dde4263ccb45df3ee8ed8de0bd3912712ffd80e856854d3ef612e1baf12ab5f02927e07b9549a330519306e9607cd155ca44d5de8a0f9e5f2010eee68d2c65833c6d3e01b8704a4933da949e",
+  "json": "{\"method\": \"setDevAttrReq\", \"service\": \"device\", \"clientId\": \"ha-1840000000000000001\", \"srcAddr\": \"0.1840000000000000001\", \"seq\": \"ha9300002\", \"payload\": {\"devId\": \"8a040e2233a243e7a07eb6a1b7a210a7\", \"parentId\": \"8a040e2233a243e7a07eb6a1b7a210a7\", \"userId\": \"1840000000000000001\", \"password\": \"devpass-0001\", \"attr\": {\"OnOff\": 1, \"Dimming\": 40, \"RGBW\": -8388598}, \"channel\": \"tcp\", \"ascNumber\": 5}, \"tst\": 1761475200123, \"deviceId\": \"8a040e2233a243e7a07eb6a1b7a210a7\"}",
+  "simpleVersion": "1"
+ },
+ "setDevAttrSimple": {
+  "attr": {
+   "CCT": 4000
+  },
+  "frameHex": "1eed000100000140f62b636f76f6ea4483c61a2e8d7408be802ac123fc099cd48a605ff090602b3e8045001c922f92d2c71b6ffb1cfd692ed3e71f8082e7936267f2070047b06050f7ca6111b236287d9971203ea11d97c9403a5be6632c59c7030cd1b81d2e3231f716cfcff86bb1fd4610f033e88223ff9285ee59f367e869612cfe764a31280cc90aa646457fb38b9b1fa4e4fc2be8590514200a7bcdf4a6000390ad6c806e625031b9f5af23a7a2bc5347c9a195cb47691658234448e79949e542ee271248d6f17629ef9f1e17844d702c2c3fb8eee62d1606c5df53a3d88b1a66f3fd5bc4c6808ca1315fbf5a69e834ac3dce7094350d5b15c4d9e38e305c6a3e3279a951a3492d49c0d16e619574f668210d1d515e9d7859a047f830835172475cd32584ef9b8517cb6d04edbc79e9250625fda688119325e2e7dc6ce216cdb567a8118be2",
+  "json": "{\"method\": \"setDevAttrReq\", \"service\": \"device\", \"clientId\": \"\", \"srcAddr\": \"0.1840000000000000001\", \"seq\": \"ha9300003\", \"payload\": {\"devId\": \"\", \"parentId\": \"\", \"userId\": \"\", \"password\": \"\", \"attr\": {\"CCT\": 4000}, \"channel\": \"tcp\", \"ascNumber\": 9}, \"tst\": 1761475200123, \"deviceId\": \"8a040e2233a243e7a07eb6a1b7a210a7\"}"
+ },
+ "shortKeyPingFrameHex": "1eed00020000006034efd5dd48d7d5ed2023b53d822971567ad0df08f17159b67afb31f18a7d0e4ca4a197ee1a491b9427a9afffddb19b1728aba77c9f1e334b597adcf98e0d90924d1a47fc0072ca7c9d4a94b742d9126b6482b7e660706dfe42c0b648de1b3262",
+ "statusPush": {
+  "frameHex": "1eed0001000001609a7227c21847df9b5d8151d10bdb0eee24d8839704cc8b2d5812f3ab998cbfc2efc8e511aea58a0a54590ecebd7d067ef7da97319c08392347d6d116e6528015af49b9d486baeefa94ce95923fb6810520d189a545998560291b7f2fd1eb2cf638d4c67438bf49353737bdf21c1fcf003bebd679ca373b044df36566b6fce7b020d189a545998560291b7f2fd1eb2cf6480ebe3d714b158d158658005b944a618397c6d2c5f3caf363910f81f014e0909cde26c2a2b0d25a68a0995e24bec2a0247b2b28ec1445610c87746ddd5213e6195015fb474b5c0b03cbf3cd9a0db041526c604b96b78e7d1ebbbec704d27de22973f19dcd8e23a188a028598ccceae98885845054ace34a8a75fc9668b860c938f7aa2590a539c6b23509ffed12d7d7765ebe40a9fe886382a1abd5f98f20e12783cb9104a5b837238681d89d92567006366852f4cbaf245a5db5749ebeb7c6ea889ef493f93c8d4d04a180d9269074",
+  "json": "{\"service\": \"device\", \"method\": \"devAttrNotify\", \"seq\": \"123\", \"srcAddr\": \"8a040e2233a243e7a07eb6a1b7a210a7\", \"deviceId\": \"8a040e2233a243e7a07eb6a1b7a210a7\", \"tst\": 1761475200123, \"payload\": {\"devId\": \"8a040e2233a243e7a07eb6a1b7a210a7\", \"ascNumber\": 7, \"attr\": {\"OnOff\": 1, \"Dimming\": 55, \"RGBW\": 65280, \"CCT\": 4000, \"effectUniqueID\": \"fx-1\"}}}"
+ },
+ "terminalIdFallbackMd5": "84ad8385855f5fc9c20238d55ccdbe8a"
+}

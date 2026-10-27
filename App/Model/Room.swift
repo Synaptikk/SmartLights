@@ -15,9 +15,10 @@ struct Room: Identifiable, Codable, Hashable, Sendable {
     }
 }
 
-/// App-owned data persisted next to the device store: rooms and app scenes.
+/// App-owned data persisted next to the device store: rooms, groups and app scenes.
 struct AppLibrary: Codable, Sendable, Equatable {
-    static let currentVersion = 1
+    /// 2 added `groups`; version-1 files decode with no groups.
+    static let currentVersion = 2
 
     var version: Int = AppLibrary.currentVersion
     var rooms: [Room] = []
@@ -26,6 +27,22 @@ struct AppLibrary: Codable, Sendable, Equatable {
     /// Lights the app has seen at least once (room auto-assignment from provider hints
     /// happens only on first sighting, so a user's "unassign" sticks).
     var seenLightIDs: Set<LightID> = []
+    /// Cross-brand light groups (`LightGroup`), in display order.
+    var groups: [LightGroup] = []
+}
+
+extension AppLibrary {
+    private enum CodingKeys: String, CodingKey { case version, rooms, scenes, seenLightIDs, groups }
+
+    /// Tolerates fields missing from older files (version 1 has no `groups`).
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        version = try c.decodeIfPresent(Int.self, forKey: .version) ?? 1
+        rooms = try c.decodeIfPresent([Room].self, forKey: .rooms) ?? []
+        scenes = try c.decodeIfPresent([LightScene].self, forKey: .scenes) ?? []
+        seenLightIDs = try c.decodeIfPresent(Set<LightID>.self, forKey: .seenLightIDs) ?? []
+        groups = try c.decodeIfPresent([LightGroup].self, forKey: .groups) ?? []
+    }
 }
 
 /// Reads/writes `AppLibrary` as one JSON file. `fileURL == nil` keeps it in memory (previews, tests).

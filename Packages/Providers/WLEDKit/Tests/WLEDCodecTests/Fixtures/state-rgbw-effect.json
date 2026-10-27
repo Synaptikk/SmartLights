@@ -1,0 +1,2 @@
+{"on":false,"bri":255,"transition":7,"ps":3,"mainseg":0,
+ "seg":[{"id":0,"start":0,"stop":144,"len":144,"on":true,"bri":255,"col":[[0,0,255,40],[0,0,0,0],[0,0,0,0]],"fx":9,"sx":200,"ix":100,"pal":11,"sel":true}]}

@@ -1,112 +1,19 @@
 import Foundation
 import LightCore
 
-// Phase-2/3 brands: summary-only stubs (steps added by T2.10 / phase-3 tasks), from
-// docs/ONBOARDING-WALKTHROUGHS.md §5-§18 and the wizard matrix. Pointer guides cover §19-§21.
+// Phase-3 brands: summary-only stubs (steps added by the phase-3 tasks), from
+// docs/ONBOARDING-WALKTHROUGHS.md §10, §15-§18 and the wizard matrix. Phase-2 brands have full
+// guides in GuideCatalog+Phase2.swift. Pointer guides cover §19-§21.
 extension GuideCatalog {
-    private static func matterAlternative(_ detail: RichText) -> GuideAlternative {
+    static func matterAlternative(_ detail: RichText) -> GuideAlternative {
         GuideAlternative(title: "Matter into Apple Home", detail: detail, targetGuideID: matterIntoAppleHomeID)
     }
 
-    private static func appleHomeAlternative(_ detail: RichText, recommended: Bool = false) -> GuideAlternative {
+    static func appleHomeAlternative(_ detail: RichText, recommended: Bool = false) -> GuideAlternative {
         GuideAlternative(title: "Apple Home", detail: detail, targetGuideID: Brand.appleHome.rawValue, isRecommended: recommended)
     }
 
     public static let stubs: [BrandGuide] = [
-        BrandGuide(
-            id: Brand.lifx.rawValue, brand: .lifx, title: "LIFX",
-            summary: """
-            Bulbs set up in the LIFX app (2.4 GHz). No account or token needed for local control.
-            Scan (mDNS `_lifx._udp` and/or UDP 56700 broadcast, else subnet probe; Add by IP available). Optional: paste a LIFX cloud token from cloud.lifx.com/settings for away-from-home control (120 requests/min).
-            """,
-            phase: 2, section: "§5",
-            alternatives: [appleHomeAlternative("Most LIFX are native HomeKit; new ones are Matter (Thread beta 2026).")],
-            facts: WizardFacts(vendorAppFirst: "yes", asksFor: "optional cloud token", settingToFlip: "—",
-                               discovery: "`_lifx._udp` / UDP 56700 / sweep", pairingAction: "none", homeKit: "yes", matter: "new SKUs"),
-            prerequisites: [iPhoneSetupID]
-        ),
-        BrandGuide(
-            id: Brand.govee.rawValue, brand: .govee, title: "Govee",
-            summary: """
-            Device set up in Govee Home (2.4 GHz). For local control the model must support the LAN API (strips, lamps, panels; most plain A19 bulbs do not) and **LAN Control** must be on: Govee Home > device > Settings (gear) > **LAN Control**.
-            For non-LAN models: Govee Home > Settings > **Apply for API Key** (emailed) and paste it (Developer API, 10k requests/day).
-            """,
-            phase: 2, section: "§6",
-            alternatives: [matterAlternative("2025-26 Govee bulbs/lamps are Matter.")],
-            verifyFlags: [VerifyFlag(id: "govee-lan-control", note: "Govee \"LAN Control\" menu path and firmware prerequisite.")],
-            facts: WizardFacts(vendorAppFirst: "yes", asksFor: "API key (cloud models)", settingToFlip: "LAN Control",
-                               discovery: "multicast 4001", pairingAction: "paste key", homeKit: "no", matter: "new SKUs"),
-            prerequisites: [iPhoneSetupID]
-        ),
-        BrandGuide(
-            id: Brand.nanoleaf.rawValue, brand: .nanoleaf, title: "Nanoleaf",
-            summary: """
-            Panels (Light Panels, Canvas, Shapes, Elements, Lines): Scan (mDNS `_nanoleafapi._tcp`), then **hold the power button on the controller for 5-7 seconds until the LEDs flash** and tap Continue within 30 seconds (Skylight: "Connect to API" in the Nanoleaf app instead).
-            Essentials (bulbs, strips): no local API; use Apple Home.
-            """,
-            phase: 2, section: "§7",
-            alternatives: [appleHomeAlternative("Essentials bulbs/strips: add to Apple Home (HomeKit over Thread/BLE, or Matter Essentials). Thread needs a HomePod/Apple TV.")],
-            verifyFlags: [VerifyFlag(id: "nanoleaf-hold-time", note: "Nanoleaf hold time (5 s per HA vs 5-7 s per Nanoleaf).")],
-            facts: WizardFacts(vendorAppFirst: "yes", asksFor: "nothing", settingToFlip: "—",
-                               discovery: "`_nanoleafapi._tcp`", pairingAction: "hold power 5-7 s", homeKit: "yes", matter: "some"),
-            prerequisites: [iPhoneSetupID]
-        ),
-        BrandGuide(
-            id: Brand.tplink.rawValue, brand: .tplink, title: "TP-Link Tapo and Kasa",
-            summary: """
-            Set up in the Tapo or Kasa app. Newer devices require your **TP-Link account email + password** for local control (case-sensitive). Some firmware needs **Tapo app > Tapo Lab > Third-Party Compatibility** turned on (TP-Link warns it lowers security). Legacy Kasa bulbs (KL/LB) need no credentials.
-            """,
-            phase: 2, section: "§8",
-            alternatives: [matterAlternative("Tapo L535E and other Matter SKUs.")],
-            facts: WizardFacts(vendorAppFirst: "yes", asksFor: "TP-Link email+password", settingToFlip: "Third-Party Compatibility",
-                               discovery: "UDP 9999/20002", pairingAction: "enter creds", homeKit: "rare", matter: "some"),
-            prerequisites: [iPhoneSetupID]
-        ),
-        BrandGuide(
-            id: Brand.yeelight.rawValue, brand: .yeelight, title: "Yeelight",
-            summary: """
-            Yeelight app > Device > (more) > **LAN Control** on (older firmware: "Developer mode"); update firmware if the toggle is missing. Some newer models removed it.
-            Scan (SSDP to 239.255.255.250:1982, mDNS `_miio._udp`) or Add by IP. No auth.
-            """,
-            phase: 2, section: "§9",
-            alternatives: [appleHomeAlternative("Some models are HomeKit-native or Matter.")],
-            facts: WizardFacts(vendorAppFirst: "yes", asksFor: "nothing", settingToFlip: "LAN Control",
-                               discovery: "SSDP 1982 / `_miio._udp`", pairingAction: "none", homeKit: "some", matter: "some"),
-            prerequisites: [iPhoneSetupID]
-        ),
-        BrandGuide(
-            id: Brand.elgato.rawValue, brand: .elgato, title: "Elgato Key Light / Air / Mini / Ring / Strip",
-            summary: "Set up in Elgato Control Center. Scan (mDNS `_elg._tcp`, HTTP 9123). No auth.",
-            phase: 2, section: "§11",
-            facts: WizardFacts(vendorAppFirst: "yes", asksFor: "nothing", settingToFlip: "—",
-                               discovery: "`_elg._tcp`", pairingAction: "none", homeKit: "no", matter: "no"),
-            prerequisites: [iPhoneSetupID]
-        ),
-        BrandGuide(
-            id: Brand.shelly.rawValue, brand: .shelly, title: "Shelly",
-            summary: "Set up in Shelly Smart Control (cloud optional). Scan (mDNS `_shelly._tcp`). If a device password was set: username is `admin` (digest auth).",
-            phase: 2, section: "§12",
-            alternatives: [matterAlternative("Gen3/4 can also do Matter (enable in device web UI).")],
-            facts: WizardFacts(vendorAppFirst: "yes", asksFor: "admin password if set", settingToFlip: "—",
-                               discovery: "`_shelly._tcp`", pairingAction: "none", homeKit: "no", matter: "Gen3/4"),
-            prerequisites: [iPhoneSetupID]
-        ),
-        BrandGuide(
-            id: Brand.wled.rawValue, brand: .wled, title: "WLED",
-            summary: "Flash WLED ≥ 0.14; join Wi-Fi `WLED-AP` (password `wled1234`), open http://4.3.2.1 > WiFi Setup, enter home SSID/password, set mDNS name, Save & Connect. Then Scan (mDNS `_wled._tcp`). No auth.",
-            phase: 2, section: "§13",
-            facts: WizardFacts(vendorAppFirst: "captive portal", asksFor: "nothing", settingToFlip: "—",
-                               discovery: "`_wled._tcp`", pairingAction: "none", homeKit: "no", matter: "no"),
-            prerequisites: [iPhoneSetupID]
-        ),
-        BrandGuide(
-            id: Brand.magicHome.rawValue, brand: .magicHome, title: "Magic Home / Zengge / LEDENET",
-            summary: "Set up in Magic Home. Scan (UDP 48899, TCP 5577). No auth. Drops offline while changing colours usually mean a weak power supply.",
-            phase: 2, section: "§14",
-            facts: WizardFacts(vendorAppFirst: "yes", asksFor: "nothing", settingToFlip: "—",
-                               discovery: "UDP 48899", pairingAction: "none", homeKit: "no", matter: "no"),
-            prerequisites: [iPhoneSetupID]
-        ),
         BrandGuide(
             id: Brand.tuya.rawValue, brand: .tuya, title: "Tuya / Smart Life",
             summary: """

@@ -1,0 +1,2 @@
+AiDotKit builds and tests on Linux (swift:6.1). AiDotCodec is pure Swift; the provider uses NWConnection/NetKit under #if canImport(Network) and a POSIX fallback transport elsewhere.
+Verify: docker run --rm -v "<repo>/Packages:/pk" -w /pk/Providers/AiDotKit swift:6.1 swift test

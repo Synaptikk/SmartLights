@@ -4,8 +4,8 @@ import LightCore
 
 /// The app's single state store (main actor). Views read it via `@Environment(AppModel.self)`.
 ///
-/// Owns the provider registry, device store, secret store and the app library (rooms, app
-/// scenes). Mirrors provider events into `lightsByID` (`lights` is the sorted array). State properties are settable only so the
+/// Owns the provider registry, device store, secret store and the app library (rooms, groups,
+/// app scenes). Mirrors provider events into `lightsByID` (`lights` is the sorted array). State properties are settable only so the
 /// `AppModel+*.swift` extensions can mutate them; views must go through the methods.
 ///
 /// Extension points for other tasks:
@@ -13,6 +13,7 @@ import LightCore
 ///   `pair(_:using:)`, `discover(brand:options:)`, `ProviderWiring.registerAll(in:)`.
 /// - T1.8 scenes: `createSnapshotScene(name:lightIDs:)`, `recall(_:)`, `saveScene(_:)`.
 /// - T1.10 intents: `send(_:to:)`, `send(_:toRoom:)`, `send(_:toLights:groupKey:)`, `lookup` helpers.
+/// - T2.8 groups: `groups`, `send(_:toGroup:)`, `setSyncSource(_:forGroup:)` (AppModel+Groups.swift).
 /// - T0.7 diagnostics: `registry`, `lights`, `providerHealth`, `lastSeen`, `recentErrors`, `sendNow(_:to:)`;
 ///   every registry event is forwarded to `DiagnosticsCollector.shared.ingest(_:)` and every
 ///   dispatched command reports latency/errors to it.
@@ -26,6 +27,8 @@ final class AppModel {
     let secretStore: any SecretStore
     let libraryStore: LibraryStore
     let coalescer: CommandCoalescer
+    /// App Group file the widget extension reads (T2.7); `fileURL == nil` in previews and tests.
+    let widgetSnapshotStore: WidgetSnapshotStore
 
     // MARK: Observable state
 
@@ -33,6 +36,8 @@ final class AppModel {
     var lightsByID: [LightID: Light] = [:]
     /// User-defined rooms, in display order.
     var rooms: [Room] = []
+    /// User-defined cross-brand groups, in display order (a light can be in many groups).
+    var groups: [LightGroup] = []
     /// App scenes (`kind == .app`).
     var appScenes: [LightScene] = []
     /// Vendor scenes from all providers (`kind == .vendor`).
@@ -56,22 +61,29 @@ final class AppModel {
     /// Provider state received while a command was in flight; applied when the burst settles.
     @ObservationIgnored var deferredStates: [LightID: LightState] = [:]
     @ObservationIgnored var dispatchStartedAt: [LightID: Date] = [:]
+    /// Last command Light Sync mirrored per group (skips repeats so echoes cannot ping-pong).
+    @ObservationIgnored var lastMirroredCommand: [LightGroup.ID: LightCommand] = [:]
     @ObservationIgnored var librarySaveTask: Task<Void, Never>?
     @ObservationIgnored var lightCacheTask: Task<Void, Never>?
+    @ObservationIgnored var lastWidgetSnapshot: WidgetSnapshot?
     @ObservationIgnored private var eventTask: Task<Void, Never>?
     @ObservationIgnored private var started = false
+    /// Foreground/background hooks of the real providers (installed by `ProviderWiring`).
+    @ObservationIgnored let providerLifecycle = ProviderLifecycle()
 
     init(
         registry: ProviderRegistry = ProviderRegistry(),
         deviceStore: any DeviceStore,
         secretStore: any SecretStore,
         libraryStore: LibraryStore,
+        widgetSnapshotStore: WidgetSnapshotStore = WidgetSnapshotStore(fileURL: nil),
         commandInterval: Duration = .milliseconds(100)
     ) {
         self.registry = registry
         self.deviceStore = deviceStore
         self.secretStore = secretStore
         self.libraryStore = libraryStore
+        self.widgetSnapshotStore = widgetSnapshotStore
         self.coalescer = CommandCoalescer(minimumInterval: commandInterval) { command, targets in
             if targets.count == 1 {
                 try await registry.send(command, to: targets[0])
@@ -91,7 +103,8 @@ final class AppModel {
         return AppModel(
             deviceStore: JSONFileDeviceStore(fileURL: folder.appending(path: "devices.json")),
             secretStore: KeychainSecretStore(),
-            libraryStore: LibraryStore(fileURL: folder.appending(path: "library.json"))
+            libraryStore: LibraryStore(fileURL: folder.appending(path: "library.json")),
+            widgetSnapshotStore: .appGroup
         )
     }
 
@@ -112,12 +125,14 @@ final class AppModel {
         do {
             let library = try await libraryStore.load()
             rooms = library.rooms
+            groups = library.groups
             appScenes = library.scenes
             seenLightIDs = library.seenLightIDs.union(lightsByID.keys)
         } catch {
             record(error: "Could not read rooms and scenes: \(error.localizedDescription)")
         }
         isLoading = false
+        trackWidgetSnapshot()
 
         await ProviderWiring.registerAll(in: self)
         await refresh()
@@ -140,8 +155,10 @@ final class AppModel {
         await reloadVendorScenes()
     }
 
-    /// Foreground/background hook (T1.6 re-registers WiZ push, reconnects Hue SSE, ...).
+    /// Foreground/background hook: reconnects Hue SSE, re-registers WiZ push and reopens AiDot TCP
+    /// in the foreground (`ProviderLifecycle`), stops them in the background, refreshes on return.
     func scenePhaseChanged(isActive: Bool) {
+        providerLifecycle.setActive(isActive)
         guard isActive, started else { return }
         Task { await refresh() }
     }
@@ -163,6 +180,7 @@ final class AppModel {
         if let account = await provider.account {
             try await deviceStore.save(account)
         }
+        reauthenticationNeeded.remove(device.brand)
         await refresh()
         return paired
     }
@@ -198,8 +216,10 @@ final class AppModel {
         case .scenesChanged:
             Task { await reloadVendorScenes() }
         case .needsReauthentication:
-            reauthenticationNeeded.insert(brand)
-            showToast("\(brand.displayName) needs you to sign in again.", isError: true)
+            // Toast once per brand until it is paired again; Settings shows a badge meanwhile.
+            if reauthenticationNeeded.insert(brand).inserted {
+                showToast("\(brand.displayName) needs you to sign in again. Open Add > \(brand.displayName).", isError: true)
+            }
         case .connectionChanged(let connected, let detail):
             health.connected = connected
             health.detail = detail
@@ -224,6 +244,7 @@ final class AppModel {
         }
         lightsByID[id]?.state = state
         scheduleLightCacheSave()
+        mirrorLightSync(from: id)
     }
 
     /// Inserts or replaces a light's metadata, keeping optimistic state while commands are in flight.
@@ -283,7 +304,7 @@ final class AppModel {
     // MARK: Persistence
 
     func scheduleLibrarySave() {
-        let library = AppLibrary(rooms: rooms, scenes: appScenes, seenLightIDs: seenLightIDs)
+        let library = AppLibrary(rooms: rooms, scenes: appScenes, seenLightIDs: seenLightIDs, groups: groups)
         let store = libraryStore
         librarySaveTask?.cancel()
         librarySaveTask = Task { [weak self] in
