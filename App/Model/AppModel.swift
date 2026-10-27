@@ -27,6 +27,8 @@ final class AppModel {
     let secretStore: any SecretStore
     let libraryStore: LibraryStore
     let coalescer: CommandCoalescer
+    /// App Group file the widget extension reads (T2.7); `fileURL == nil` in previews and tests.
+    let widgetSnapshotStore: WidgetSnapshotStore
 
     // MARK: Observable state
 
@@ -63,6 +65,7 @@ final class AppModel {
     @ObservationIgnored var lastMirroredCommand: [LightGroup.ID: LightCommand] = [:]
     @ObservationIgnored var librarySaveTask: Task<Void, Never>?
     @ObservationIgnored var lightCacheTask: Task<Void, Never>?
+    @ObservationIgnored var lastWidgetSnapshot: WidgetSnapshot?
     @ObservationIgnored private var eventTask: Task<Void, Never>?
     @ObservationIgnored private var started = false
     /// Foreground/background hooks of the real providers (installed by `ProviderWiring`).
@@ -73,12 +76,14 @@ final class AppModel {
         deviceStore: any DeviceStore,
         secretStore: any SecretStore,
         libraryStore: LibraryStore,
+        widgetSnapshotStore: WidgetSnapshotStore = WidgetSnapshotStore(fileURL: nil),
         commandInterval: Duration = .milliseconds(100)
     ) {
         self.registry = registry
         self.deviceStore = deviceStore
         self.secretStore = secretStore
         self.libraryStore = libraryStore
+        self.widgetSnapshotStore = widgetSnapshotStore
         self.coalescer = CommandCoalescer(minimumInterval: commandInterval) { command, targets in
             if targets.count == 1 {
                 try await registry.send(command, to: targets[0])
@@ -98,7 +103,8 @@ final class AppModel {
         return AppModel(
             deviceStore: JSONFileDeviceStore(fileURL: folder.appending(path: "devices.json")),
             secretStore: KeychainSecretStore(),
-            libraryStore: LibraryStore(fileURL: folder.appending(path: "library.json"))
+            libraryStore: LibraryStore(fileURL: folder.appending(path: "library.json")),
+            widgetSnapshotStore: .appGroup
         )
     }
 
@@ -126,6 +132,7 @@ final class AppModel {
             record(error: "Could not read rooms and scenes: \(error.localizedDescription)")
         }
         isLoading = false
+        trackWidgetSnapshot()
 
         await ProviderWiring.registerAll(in: self)
         await refresh()
