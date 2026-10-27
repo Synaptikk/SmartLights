@@ -1,0 +1,72 @@
+{
+  "id": 7,
+  "type": "result",
+  "success": true,
+  "result": [
+    {
+      "aliases": [],
+      "area_id": "bedroom",
+      "created_at": 1721136600.900075,
+      "floor_id": "first_floor",
+      "humidity_entity_id": null,
+      "icon": "mdi:bed",
+      "labels": [],
+      "modified_at": 1721136600.900075,
+      "name": "Bedroom",
+      "picture": null,
+      "temperature_entity_id": null
+    },
+    {
+      "aliases": [],
+      "area_id": "garage",
+      "created_at": 1721136600.900075,
+      "floor_id": null,
+      "humidity_entity_id": null,
+      "icon": "mdi:garage",
+      "labels": [],
+      "modified_at": 1721136600.900075,
+      "name": "Garage",
+      "picture": null,
+      "temperature_entity_id": null
+    },
+    {
+      "aliases": [],
+      "area_id": "hallway",
+      "created_at": 1721136600.900075,
+      "floor_id": "ground_floor",
+      "humidity_entity_id": null,
+      "icon": null,
+      "labels": [],
+      "modified_at": 1721136600.900075,
+      "name": "Hallway",
+      "picture": null,
+      "temperature_entity_id": null
+    },
+    {
+      "aliases": [],
+      "area_id": "kitchen",
+      "created_at": 1721136600.900075,
+      "floor_id": "ground_floor",
+      "humidity_entity_id": null,
+      "icon": null,
+      "labels": [],
+      "modified_at": 1721136600.900075,
+      "name": "Kitchen",
+      "picture": null,
+      "temperature_entity_id": null
+    },
+    {
+      "aliases": [],
+      "area_id": "living_room",
+      "created_at": 1721136600.900075,
+      "floor_id": "ground_floor",
+      "humidity_entity_id": null,
+      "icon": "mdi:sofa",
+      "labels": [],
+      "modified_at": 1721136600.900075,
+      "name": "Living Room",
+      "picture": null,
+      "temperature_entity_id": null
+    }
+  ]
+}

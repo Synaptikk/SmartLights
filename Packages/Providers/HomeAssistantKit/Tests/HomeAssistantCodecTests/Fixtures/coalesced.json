@@ -1,0 +1,5 @@
+[
+  {"id": 2, "type": "result", "success": true, "result": null},
+  {"id": 2, "type": "event", "event": {"event_type": "state_changed", "data": {"entity_id": "light.kitchen_lights", "old_state": null, "new_state": {"entity_id": "light.kitchen_lights", "state": "off", "attributes": {"supported_color_modes": ["color_temp", "hs"], "color_mode": null, "friendly_name": "Kitchen Lights", "supported_features": 0}, "last_changed": "2026-10-26T18:00:00.000001+00:00", "last_updated": "2026-10-26T18:00:00.000001+00:00", "context": {"id": "01JBX0000000000000000000C1", "parent_id": null, "user_id": null}}}, "origin": "LOCAL", "time_fired": "2026-10-26T18:00:00.000123+00:00", "context": {"id": "01JBX0000000000000000000C1", "parent_id": null, "user_id": null}}},
+  {"id": 3, "type": "pong"}
+]
