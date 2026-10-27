@@ -29,3 +29,7 @@ See `Packages/LightCore/NOTICES.md` for attributions (Home Assistant Apache-2.0 
 ## HueKit
 
 See `Packages/Providers/HueKit/NOTICES.md` (aiohue test fixture, Apache-2.0; Signify root CA PEM via Hue-Sync).
+
+## AiDotKit
+
+Protocol ported from python-aidot 0.3.59 (AiDot-Development-Team, MIT); test fixtures generated with it.
