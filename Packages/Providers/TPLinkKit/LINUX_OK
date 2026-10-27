@@ -1,0 +1,2 @@
+TPLinkKit builds and tests on Linux (swift:6.1). TPLinkCodec is pure Swift + swift-crypto; the provider uses POSIX TCP and URLSession (FoundationNetworking) and keeps NetKit UDP discovery under #if canImport(Darwin).
+Verify: docker run --rm -v "<repo>/Packages:/pk" -w /pk/Providers/TPLinkKit swift:6.1 swift test

@@ -1,0 +1,75 @@
+{
+  "discovery_20002": {
+    "flags": 17,
+    "payload": "{\"params\": {\"rsa_key\": \"-----BEGIN PUBLIC KEY-----\\nTEST\\n-----END PUBLIC KEY-----\\n\"}}",
+    "query": "0200000100571100010203040c3b73317b22706172616d73223a207b227273615f6b6579223a20222d2d2d2d2d424547494e205055424c4943204b45592d2d2d2d2d5c6e544553545c6e2d2d2d2d2d454e44205055424c4943204b45592d2d2d2d2d5c6e227d7d",
+    "serial": 16909060
+  },
+  "discovery_legacy": "d0f281f88bff9af7d5efcfb496f194e0bfccb5c6afc1a7c8ead0f08bf68bf6",
+  "discovery_legacy_plain": "{\"system\": {\"get_sysinfo\": {}}}",
+  "discovery_query_2": "020000010000000000000000463cb5d3",
+  "klap": {
+    "blank_v1_auth_hash": "5873dd45edd01f09c1ef2e7819369e8e",
+    "blank_v2_auth_hash": "b8628ab91c74f531603f6d5b45e730e54c123a7247b8978272c03f1e13560cea",
+    "local_seed": "000102030405060708090a0b0c0d0e0f",
+    "lowercase_v2_auth_hash": "b9c7f04232693d9672231bf4867484761ac2ef7010c28b76c8db89b1e7c96fa5",
+    "password": "Pa55word!",
+    "remote_seed": "101112131415161718191a1b1c1d1e1f",
+    "username": "User@Example.com",
+    "v1_auth_hash": "3650ba565334637dad2eabb75397ff2a",
+    "v1_handshake1_server_hash": "223667d2d8d2da8366422a8c6f8c2b54573144df30c3586ba958de28cce29f61",
+    "v1_handshake2_payload": "6d227b2fb63324d992c0c555f555eccfcaf57be043b2fc9e5c9e77f1adf34f4f",
+    "v2_auth_hash": "5f9e01a453e24aa640205aaa45beee8942fbd7b2e09c04dd70803685ec938af3",
+    "v2_handshake1_server_hash": "a7548b5fbe08c66f66117445e53ba078655f7b04b260dc446a799210cbb5c2b7",
+    "v2_handshake2_payload": "8f8d200a5a821a9f5d4d4e0ff26b19275986db339421e21bc0ffe5f8fd4b856e"
+  },
+  "klap_seq_pack": {
+    "-1": "ffffffff",
+    "-2147483648": "80000000",
+    "0": "00000000",
+    "1": "00000001",
+    "2147483647": "7fffffff"
+  },
+  "klap_session": {
+    "iv": "f941fa90cdc20a470c137f1e",
+    "key": "abdd604e4bd522d7d060d10d3a92be5b",
+    "messages": [
+      {
+        "decrypted": "{\"error_code\":0,\"result\":{\"device_on\":true}}",
+        "payload": "31b275dcdc6c71ffb98c96120d1e9ec44f0a9c5f4bf6dd18204eb2fe08bac4305cdcbbcbb4b46ed699301fd941d2ae9f6946038453923189859d448f625f2681",
+        "plain": "{\"method\":\"get_device_info\"}",
+        "response": "fedbf3b476a5b4e11ebb023f77ef1e498ece6e976c80aa0f4d0be9ed8dc1ccae3db39896186cf66f6843ee74d2cfee04783145635f1d6befbfc0abfd10a604f95b4e5275aafa57151a035bde20fdeea9",
+        "response_plain": "{\"error_code\":0,\"result\":{\"device_on\":true}}",
+        "seq": -35070834
+      },
+      {
+        "decrypted": "{\"error_code\":0,\"result\":{\"device_on\":true}}",
+        "payload": "a5000029d4a4c0b0224e5f1c92117d3bad36a9dd8ccbf48558c8d5a74e448719bed648c1bba89b3737937ce0dfe28ee0766fdbadfcf523ca8dd77902b77f334281340bd4a808977026b4ce6a3a71ada3b9491a7b85f65ec2fa2d746bc5018c73d3c492633bc59c3e17787d39cf6acbe9",
+        "plain": "{\"method\":\"set_device_info\",\"params\":{\"device_on\":true,\"brightness\":50}}",
+        "response": "237fa6bccf573fd1fd024539193a19113c088e0ef4f274570bba19a048c7c5639f3935afb03838c3e2919a51e732141d1fd4398a5466bfa95824c95d44af60aa9b406bf9cb370daebd5fc8eff38ae62c",
+        "response_plain": "{\"error_code\":0,\"result\":{\"device_on\":true}}",
+        "seq": -35070833
+      }
+    ],
+    "seq": -35070835,
+    "sig": "59027941a11f6f78265fbd2837f3de74b03c6fd8cb4d534c06ba0f6f"
+  },
+  "python_kasa_version": "0.12.0",
+  "xor": [
+    {
+      "decrypted": "{\"system\":{\"get_sysinfo\":{}}}",
+      "framed": "0000001dd0f281f88bff9af7d5ef94b6d1b4c09fec95e68fe187e8caf08bf68bf6",
+      "plain": "{\"system\":{\"get_sysinfo\":{}}}"
+    },
+    {
+      "decrypted": "{\"smartlife.iot.smartbulb.lightingservice\":{\"transition_light_state\":{\"on_off\":1,\"brightness\":42,\"hue\":120,\"saturation\":75,\"color_temp\":0,\"transition_period\":500,\"ignore_default\":1}}}",
+      "framed": "000000b7d0f281ec8dff8be78ee88da3caa5d1ff8ce180f286e491fd9fb1ddb4d3bbcfa6c8afdcb9cbbdd4b7d2f0cab193e795f49ae980f49df29cc3afc6a1c9bde291e584f095b78df6d4bbd58ae583e5c7fdcce0c2a0d2bbdcb4c0aecbb8cbe9d3e7d5f9dbb3c6a381bb8ab888a486f594e095e786f29bf49ab882b580ac8eed82ee81f3acd8bdd0a082b888a486f280e18ffc95e188e789d6a6c3b1d8b7d3f1cbfecefed2f099fe90ff8de8b7d3b6d0b1c4a8dcfec4f588f588",
+      "plain": "{\"smartlife.iot.smartbulb.lightingservice\":{\"transition_light_state\":{\"on_off\":1,\"brightness\":42,\"hue\":120,\"saturation\":75,\"color_temp\":0,\"transition_period\":500,\"ignore_default\":1}}}"
+    },
+    {
+      "decrypted": "",
+      "framed": "00000000",
+      "plain": ""
+    }
+  ]
+}

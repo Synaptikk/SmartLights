@@ -187,7 +187,7 @@ Not controllable locally from a phone. Buy/use their **Matter** SKUs (Cync "Matt
 | LIFX | yes | optional cloud token | — | `_lifx._udp` / UDP 56700 / sweep | none | yes | new SKUs |
 | Govee | yes | API key (cloud models) | LAN Control | multicast 4001 | paste key | no | new SKUs |
 | Nanoleaf panels | yes | nothing | — | `_nanoleafapi._tcp` | hold power 5-7 s | yes | some |
-| TP-Link | yes | TP-Link email+password | Third-Party Compatibility | UDP 9999/20002 | enter creds | rare | some |
+| TP-Link (provider implemented (PR), T2.6) | yes | TP-Link email+password (KLAP devices only) | Third-Party Compatibility | UDP 9999/20002 / sweep / IP | enter creds | rare | some |
 | Yeelight | yes | nothing | LAN Control | SSDP 1982 / `_miio._udp` | none | some | some |
 | Tuya | yes (Smart Life) | user code + QR, or local key | — | UDP 6666/6667/7000 | QR or key | no | some |
 | Elgato | yes | nothing | — | `_elg._tcp` | none | no | no |
