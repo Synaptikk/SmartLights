@@ -4,6 +4,12 @@ Agents add questions here when they need input only the user can give. Answer in
 
 ---
 
+## From T3.1 TuyaKit (2026-10-27)
+
+1. **Do you own Tuya / Smart Life lights** (Feit, Globe, Merkury/Geeni, Teckin, Gosund, Treatlife, Sylvania Wi-Fi, ...)? Which models, and do any have a Matter logo (then Apple Home is the easier path)?
+2. **The device at `192.168.254.38`** (TCP 6668 open, see question 8 below): TuyaKit can now talk to it. To confirm the protocol on real hardware we need its **device id**, **local key** and **protocol version** (steps in `Packages/Providers/TuyaKit/README.md`, "Getting the device id and local key"; `python -m tinytuya wizard` then `python -m tinytuya scan`). Keep the key out of the repo and chats: put it in an env var on the dev PC. Is it OK for an agent to toggle it (`TEST_DEVICE`)?
+3. **Colour temperature range** of your Tuya bulbs (box or app, e.g. 2700-6500 K or 2200-6500 K): Tuya does not report it, so the app assumes 2700-6500 K.
+
 ## From T0.8 hardware probes (2026-10-26)
 
 The first probe run from the dev PC (`192.168.254.40`, wired to the Sagemcom/Kinetic gateway) found **no** WiZ bulbs, Hue bridge or AiDot bulbs. Details are in `docs/HARDWARE-NOTES.md`.

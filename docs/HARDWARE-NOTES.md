@@ -4,6 +4,20 @@ Observations from real hardware (probe scripts in `tools/probe/`, raw output in 
 
 ---
 
+## 2026-10-27 - TuyaKit (T3.1): not yet confirmed on hardware
+
+TuyaKit was built against tinytuya 1.20.0 (byte-for-byte fixtures) and an in-package fake device; no real Tuya device has been
+connected yet (`192.168.254.38`, TCP 6668 open, is the candidate). To confirm once a device id + local key are available:
+
+| Item | Assumption in code | How to check |
+|---|---|---|
+| Protocol version and handshake | auto-detect 3.3 → 3.5 → 3.4 → 3.1 | `python -m tinytuya scan` shows `version`; pairing in the app reports it |
+| Bulb type / dps | B (20-24) or A/C (1-5) from the first status | first `DP_QUERY` answer (`python -m tinytuya` `d.status()`) |
+| `temp_value_v2` 0-1000 range | 2700-6500 K | compare with the box / Smart Life slider ends |
+| Idle timeout | heartbeat every 10 s; reset after 3 unanswered | watch the session stay up for > 5 min |
+| Single client | Smart Life (LAN) and SmartLights can't both hold the connection | open Smart Life while the app is connected |
+| UDP announcements | 6667 ECB (3.3/3.4), 6699 GCM (3.5), every ~5 s | `python -m tinytuya scan` or a 6666/6667 listener |
+
 ## 2026-10-26 - first probe run from the dev PC (T0.8)
 
 ### Network as seen from the dev PC
