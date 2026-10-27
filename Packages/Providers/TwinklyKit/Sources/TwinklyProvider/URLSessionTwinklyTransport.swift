@@ -2,6 +2,7 @@
 import Foundation
 import LightCore
 import NetKit
+import TwinklyCodec
 
 /// `TwinklyTransport` on URLSession (plain HTTP, one connection per host: the ESP-based
 /// controllers handle one at a time) and NetKit's BSD `UDPSocket` for UDP 5555 discovery.
