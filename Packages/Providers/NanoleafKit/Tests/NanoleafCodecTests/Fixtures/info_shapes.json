@@ -1,0 +1,37 @@
+{
+  "name": "Shapes 4A2B",
+  "serialNo": "S19124C8036",
+  "manufacturer": "Nanoleaf",
+  "firmwareVersion": "9.2.4",
+  "hardwareVersion": "1.4-4",
+  "model": "NL42",
+  "cloudHash": {},
+  "discovery": {},
+  "effects": {
+    "effectsList": ["*Solid*", "Fireworks", "Flames", "Forest", "Inner Peace", "Northern Lights", "Romantic", "Snowfall", "Flames"],
+    "select": "Northern Lights"
+  },
+  "firmwareUpgrade": {},
+  "panelLayout": {
+    "globalOrientation": {"value": 120, "max": 360, "min": 0},
+    "layout": {
+      "numPanels": 3,
+      "sideLength": 0,
+      "positionData": [
+        {"panelId": 7397, "x": 100, "y": 50, "o": 60, "shapeType": 7},
+        {"panelId": 10241, "x": 200, "y": 50, "o": 0, "shapeType": 7},
+        {"panelId": 0, "x": 150, "y": 0, "o": 0, "shapeType": 12}
+      ]
+    }
+  },
+  "rhythm": {"rhythmConnected": false, "rhythmActive": false, "rhythmId": 0, "hardwareVersion": "", "firmwareVersion": "", "auxAvailable": false, "rhythmMode": 0, "rhythmPos": {}},
+  "schedules": {},
+  "state": {
+    "brightness": {"value": 65, "max": 100, "min": 0},
+    "colorMode": "effect",
+    "ct": {"value": 4000, "max": 6500, "min": 1200},
+    "hue": {"value": 210, "max": 360, "min": 0},
+    "on": {"value": true},
+    "sat": {"value": 80, "max": 100, "min": 0}
+  }
+}
