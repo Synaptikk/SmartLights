@@ -127,7 +127,7 @@ struct RunnerTests {
     }
 
     @Test func stubGuideIsFinishedImmediately() throws {
-        let runner = GuideRunner(guide: try #require(GuideCatalog.standard.guide(for: .lifx)))
+        let runner = GuideRunner(guide: try #require(GuideCatalog.standard.guide(for: .tuya)))
         #expect(runner.isFinished)
         #expect(runner.currentStep == nil)
         #expect(!runner.canAdvance)

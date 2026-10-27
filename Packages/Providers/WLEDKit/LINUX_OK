@@ -1,0 +1,2 @@
+WLEDKit (WLEDCodec + WLEDProvider) builds and tests on Linux (swift:6.1). URLSession comes from FoundationNetworking; Bonjour is guarded with #if canImport(Network).
+Verify: docker run --rm -v "<repo>/Packages:/pk" -w /pk/Providers/WLEDKit swift:6.1 swift test

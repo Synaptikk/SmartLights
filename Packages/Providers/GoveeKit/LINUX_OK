@@ -1,0 +1,3 @@
+GoveeKit (GoveeCodec + GoveeProvider) builds and tests on Linux; Apple-only transport is behind #if canImport(Darwin).
+Verify with:
+  docker run --rm -v "<repo>:/src" -w /src/Packages/Providers/GoveeKit swift:6.1 swift test

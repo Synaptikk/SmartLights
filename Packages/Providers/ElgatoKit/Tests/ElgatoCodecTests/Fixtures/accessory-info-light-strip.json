@@ -1,0 +1,12 @@
+{
+  "productName": "Elgato Light Strip",
+  "hardwareBoardType": 70,
+  "hardwareRevision": "1.0",
+  "macAddress": "3C:6A:9D:14:D0:F5",
+  "firmwareBuildNumber": 211,
+  "firmwareVersion": "1.0.4",
+  "serialNumber": "EW52J1A00082",
+  "displayName": "",
+  "features": ["lights"],
+  "wifi-info": {"ssid": "Home", "frequencyMHz": 2400, "rssi": -61}
+}

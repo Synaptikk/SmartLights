@@ -44,6 +44,17 @@ extension ForegroundContinuableIntent {
         return "\(room.name) is \(on ? "on" : "off").\(outcome.failureSuffix)"
     }
 
+    @MainActor
+    func recallScene(_ entity: SceneEntity, model: AppModel) async throws -> String {
+        await model.prepareForIntents()
+        let resolved = try model.resolve(entity)
+        var brands = Array(resolved.commands.keys.map(\.brand))
+        if let brand = resolved.brand { brands.append(brand) }
+        try await continueInForegroundIfNeeded(for: brands)
+        let outcome = try await model.recallForIntent(resolved)
+        return "\(resolved.name) is on.\(outcome.failureSuffix)"
+    }
+
     /// `percent` 0 turns the lights off; otherwise they turn on at that brightness.
     @MainActor
     func setBrightness(_ percent: Int, on lights: [Light], name: String, model: AppModel) async throws -> String {
@@ -427,12 +438,7 @@ struct RecallSceneIntent: AppIntent, ForegroundContinuableIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        await model.prepareForIntents()
-        let resolved = try model.resolve(scene)
-        var brands = Array(resolved.commands.keys.map(\.brand))
-        if let brand = resolved.brand { brands.append(brand) }
-        try await continueInForegroundIfNeeded(for: brands)
-        let outcome = try await model.recallForIntent(resolved)
-        return .result(dialog: "\(resolved.name) is on.\(outcome.failureSuffix)")
+        let message = try await recallScene(scene, model: model)
+        return .result(dialog: "\(message)")
     }
 }

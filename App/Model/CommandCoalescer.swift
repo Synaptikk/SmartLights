@@ -5,13 +5,16 @@ import LightCore
 /// merge into the queued one (latest wins), and sends start at most every `minimumInterval`
 /// (100 ms = 10/s, the strictest per-light vendor limit, Hue).
 ///
-/// Keys are a single light or a room; a room key dispatches one group command so providers
-/// can use native groups (Hue grouped_light).
+/// Keys are a single light, a room or a group; multi-light keys dispatch one group command
+/// (`ProviderRegistry.sendGroup`: split by brand, providers in parallel, native groups where
+/// the provider has them, e.g. Hue grouped_light).
 @MainActor
 final class CommandCoalescer {
     enum Key: Hashable, Sendable {
         case light(LightID)
         case room(Room.ID)
+        /// A cross-brand `LightGroup` (group controls and Light Sync mirroring).
+        case lightGroup(LightGroup.ID)
         /// Any other caller-defined group (intents, scene recall).
         case group(String)
     }

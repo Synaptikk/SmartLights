@@ -1,0 +1,241 @@
+{
+  "id": 6,
+  "type": "result",
+  "success": true,
+  "result": [
+    {
+      "area_id": "bedroom",
+      "config_entries": [
+        "01JBX00000000000000000CE01"
+      ],
+      "config_entries_subentries": {
+        "01JBX00000000000000000CE01": [
+          null
+        ]
+      },
+      "config_entry_id": "01JBX00000000000000000CE01",
+      "config_subentry_id": null,
+      "configuration_url": null,
+      "connections": [],
+      "created_at": 1729960000.123456,
+      "disabled_by": null,
+      "entry_type": null,
+      "hw_version": null,
+      "id": "7d1c0b0a9f8e7d6c5b4a3f2e1d0c0b01",
+      "identifiers": [
+        [
+          "demo",
+          "bed_light"
+        ]
+      ],
+      "labels": [],
+      "manufacturer": "Home Assistant",
+      "model": "Demo light",
+      "model_id": null,
+      "modified_at": 1729960000.123456,
+      "name_by_user": null,
+      "name": "Bed Light",
+      "next_name_part": null,
+      "parent_device_id": null,
+      "primary_config_entry": "01JBX00000000000000000CE01",
+      "serial_number": null,
+      "sw_version": null,
+      "via_device_id": null
+    },
+    {
+      "area_id": "living_room",
+      "config_entries": [
+        "01JBX00000000000000000CE01"
+      ],
+      "config_entries_subentries": {
+        "01JBX00000000000000000CE01": [
+          null
+        ]
+      },
+      "config_entry_id": "01JBX00000000000000000CE01",
+      "config_subentry_id": null,
+      "configuration_url": null,
+      "connections": [],
+      "created_at": 1729960000.123456,
+      "disabled_by": null,
+      "entry_type": null,
+      "hw_version": null,
+      "id": "7d1c0b0a9f8e7d6c5b4a3f2e1d0c0b02",
+      "identifiers": [
+        [
+          "demo",
+          "ceiling_lights"
+        ]
+      ],
+      "labels": [],
+      "manufacturer": "Signify Netherlands B.V.",
+      "model": "Hue color lamp",
+      "model_id": null,
+      "modified_at": 1729960000.123456,
+      "name_by_user": null,
+      "name": "Ceiling Lights",
+      "next_name_part": null,
+      "parent_device_id": null,
+      "primary_config_entry": "01JBX00000000000000000CE01",
+      "serial_number": null,
+      "sw_version": null,
+      "via_device_id": null
+    },
+    {
+      "area_id": "kitchen",
+      "config_entries": [
+        "01JBX00000000000000000CE01"
+      ],
+      "config_entries_subentries": {
+        "01JBX00000000000000000CE01": [
+          null
+        ]
+      },
+      "config_entry_id": "01JBX00000000000000000CE01",
+      "config_subentry_id": null,
+      "configuration_url": null,
+      "connections": [],
+      "created_at": 1729960000.123456,
+      "disabled_by": null,
+      "entry_type": null,
+      "hw_version": null,
+      "id": "7d1c0b0a9f8e7d6c5b4a3f2e1d0c0b03",
+      "identifiers": [
+        [
+          "demo",
+          "kitchen_lights"
+        ]
+      ],
+      "labels": [],
+      "manufacturer": "Home Assistant",
+      "model": "Demo light",
+      "model_id": null,
+      "modified_at": 1729960000.123456,
+      "name_by_user": null,
+      "name": "Kitchen Lights",
+      "next_name_part": null,
+      "parent_device_id": null,
+      "primary_config_entry": "01JBX00000000000000000CE01",
+      "serial_number": null,
+      "sw_version": null,
+      "via_device_id": null
+    },
+    {
+      "area_id": null,
+      "config_entries": [
+        "01JBX00000000000000000CE01"
+      ],
+      "config_entries_subentries": {
+        "01JBX00000000000000000CE01": [
+          null
+        ]
+      },
+      "config_entry_id": "01JBX00000000000000000CE01",
+      "config_subentry_id": null,
+      "configuration_url": null,
+      "connections": [],
+      "created_at": 1729960000.123456,
+      "disabled_by": null,
+      "entry_type": null,
+      "hw_version": null,
+      "id": "7d1c0b0a9f8e7d6c5b4a3f2e1d0c0b04",
+      "identifiers": [
+        [
+          "demo",
+          "office_rgbw_lights"
+        ]
+      ],
+      "labels": [],
+      "manufacturer": "Home Assistant",
+      "model": "Demo light",
+      "model_id": null,
+      "modified_at": 1729960000.123456,
+      "name_by_user": null,
+      "name": "Office RGBW Lights",
+      "next_name_part": null,
+      "parent_device_id": null,
+      "primary_config_entry": "01JBX00000000000000000CE01",
+      "serial_number": null,
+      "sw_version": null,
+      "via_device_id": null
+    },
+    {
+      "area_id": "living_room",
+      "config_entries": [
+        "01JBX00000000000000000CE01"
+      ],
+      "config_entries_subentries": {
+        "01JBX00000000000000000CE01": [
+          null
+        ]
+      },
+      "config_entry_id": "01JBX00000000000000000CE01",
+      "config_subentry_id": null,
+      "configuration_url": null,
+      "connections": [],
+      "created_at": 1729960000.123456,
+      "disabled_by": null,
+      "entry_type": null,
+      "hw_version": null,
+      "id": "7d1c0b0a9f8e7d6c5b4a3f2e1d0c0b05",
+      "identifiers": [
+        [
+          "demo",
+          "living_room_rgbww_lights"
+        ]
+      ],
+      "labels": [],
+      "manufacturer": "Home Assistant",
+      "model": "Demo light",
+      "model_id": null,
+      "modified_at": 1729960000.123456,
+      "name_by_user": null,
+      "name": "Living Room RGBWW Lights",
+      "next_name_part": null,
+      "parent_device_id": null,
+      "primary_config_entry": "01JBX00000000000000000CE01",
+      "serial_number": null,
+      "sw_version": null,
+      "via_device_id": null
+    },
+    {
+      "area_id": "hallway",
+      "config_entries": [
+        "01JBX00000000000000000CE01"
+      ],
+      "config_entries_subentries": {
+        "01JBX00000000000000000CE01": [
+          null
+        ]
+      },
+      "config_entry_id": "01JBX00000000000000000CE01",
+      "config_subentry_id": null,
+      "configuration_url": null,
+      "connections": [],
+      "created_at": 1729960000.123456,
+      "disabled_by": null,
+      "entry_type": null,
+      "hw_version": null,
+      "id": "7d1c0b0a9f8e7d6c5b4a3f2e1d0c0b06",
+      "identifiers": [
+        [
+          "demo",
+          "entrance_color_+_white_lights"
+        ]
+      ],
+      "labels": [],
+      "manufacturer": "Home Assistant",
+      "model": "Demo light",
+      "model_id": null,
+      "modified_at": 1729960000.123456,
+      "name_by_user": null,
+      "name": "Entrance Color + White Lights",
+      "next_name_part": null,
+      "parent_device_id": null,
+      "primary_config_entry": "01JBX00000000000000000CE01",
+      "serial_number": null,
+      "sw_version": null,
+      "via_device_id": null
+    }
+  ]
+}
