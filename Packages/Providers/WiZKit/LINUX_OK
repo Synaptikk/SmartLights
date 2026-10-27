@@ -1,0 +1,2 @@
+WiZKit (WiZCodec + WiZKit provider) builds and tests on Linux (swift:6.1). The NetKit BSD-socket transport is guarded with #if canImport(Darwin).
+Verify: docker run --rm -v "<repo>/Packages:/pk" -w /pk/Providers/WiZKit swift:6.1 swift test
