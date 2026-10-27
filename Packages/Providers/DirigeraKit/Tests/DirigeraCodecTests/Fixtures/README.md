@@ -1,0 +1,5 @@
+- `devices.json`: the "Bed" light is copied from Leggin/dirigera `tests/test_light.py` (MIT, see `../../../NOTICES.md`); the other devices are synthetic in the same shape (a colour bulb, a KAJPLATS reporting mired bounds as Leggin's `_bound_to_kelvin` describes, a dimmable bulb, an outlet, a sensor, the gateway).
+- `event_state_changed.json`: envelope fields per the Leggin/dirigera README ("type" + "data" with the device "id"); the `id/time/specversion/source` header is from community captures **[verify on hardware]**.
+- `hub_status.json`: shape of `GET /v1/hub/status` **[verify on hardware]**.
+- `scenes.json`: shape of Leggin/dirigera `Scene` (`id`, `type`, `info.name/icon`, `triggers`, `actions`).
+- `pkce_vector.json`: generated with Python exactly as Leggin/dirigera `code_challenge()`.
