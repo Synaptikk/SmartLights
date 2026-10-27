@@ -4,6 +4,11 @@ Agents add questions here when they need input only the user can give. Answer in
 
 ---
 
+## From T3.1 TuyaKit (2026-10-27)
+
+1. **Do you own Tuya / Smart Life lights** (Feit, Globe, Merkury/Geeni, Teckin, Gosund, Treatlife, Sylvania Wi-Fi, ...)? Which models, and do any have a Matter logo (then Apple Home is the easier path)?
+2. **The device at `192.168.254.38`** (TCP 6668 open, see question 8 below): TuyaKit can now talk to it. To confirm the protocol on real hardware we need its **device id**, **local key** and **protocol version** (steps in `Packages/Providers/TuyaKit/README.md`, "Getting the device id and local key"; `python -m tinytuya wizard` then `python -m tinytuya scan`). Keep the key out of the repo and chats: put it in an env var on the dev PC. Is it OK for an agent to toggle it (`TEST_DEVICE`)?
+3. **Colour temperature range** of your Tuya bulbs (box or app, e.g. 2700-6500 K or 2200-6500 K): Tuya does not report it, so the app assumes 2700-6500 K.
 ## From T3.6 HomeAssistantKit (2026-10-27)
 
 1. **Do you run Home Assistant?** If yes, which URL do you use at home (for example `http://homeassistant.local:8123`), and do you have Nabu Casa remote access (`https://….ui.nabu.casa`)? The provider needs a long-lived access token. See `Packages/Providers/HomeAssistantKit/README.md` for how to create one. Paste it only into the app, never into the repo.
