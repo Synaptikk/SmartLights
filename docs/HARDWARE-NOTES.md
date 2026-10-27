@@ -4,6 +4,27 @@ Observations from real hardware (probe scripts in `tools/probe/`, raw output in 
 
 ---
 
+## 2026-10-27 - Twinkly and DIRIGERA (T3.4, T3.5): not yet seen on hardware
+
+Neither device has been probed; both providers are built from the protocol references and tested only against in-package fakes. Check these on real hardware and correct the providers if they differ:
+
+### Twinkly (TwinklyKit, xled-docs)
+- [verify] A unicast `\x01discover` to a single device on UDP 5555 is answered (the sweep fallback depends on it; xled supports a `destination_host`).
+- [verify] `/xled/v1/led/color` exists on the user's firmware (xled-docs: since 2.7.1). Older firmware is treated as brightness-only.
+- [verify] How long the token lasts (`authentication_token_expires_in`, documented as 14400 s). Another controller logging in should make our next call return 401. The provider then logs in once more.
+- [verify] Whether the Twinkly app switches back to `movie` on "on". The provider restores the last "on" mode, or `movie` if there is none.
+- Effects: every predefined effect and the uploaded movie are flagged `isFast`, so the UI always shows the photosensitivity warning. Twinkly does not report effect speed.
+
+### IKEA DIRIGERA (DirigeraKit, Leggin/dirigera)
+- [verify] **Certificate**: TOFU pinning relies on the hub's leaf being **self-signed** (issuer == subject). NetKit `TrustEvaluator` only pins self-issued leaves. If the hub serves a chain to an IKEA CA instead, every request after pairing will be rejected. Record the issuer/subject/CN and adjust (pin the leaf without the self-issued check). The CN is deliberately not checked: its format is unknown.
+- [verify] `GET /v1/hub/status` returns `{"id": ...}` with the hub id. It is used as the stable hub id and the pin key.
+- [verify] Token endpoint before the button press: the provider retries on 400/401/403 for 30 s. The exact status the hub returns has not been observed.
+- [verify] Whether one PATCH may carry `isOn` + `lightLevel` + colour together. The provider tries combined first and falls back to one PATCH per attribute group on HTTP 400 (remembered per hub).
+- [verify] WebSocket event envelope (`type`, `data.id`, partial `data.attributes`, `isReachable`) and whether the hub needs our pings (we ping every 60 s like Leggin/dirigera).
+- [verify] mDNS: Leggin/dirigera only says the hub announces `gw2-<id>.local`. The service types `_ihsp._tcp` and `_hap._tcp` that the provider browses are guesses. Manual IP and the HTTPS /24 sweep (probe `GET /v1/hub/status` -> 401) work without Bonjour.
+
+---
+
 ## 2026-10-27 - TuyaKit (T3.1): not yet confirmed on hardware
 
 TuyaKit was built against tinytuya 1.20.0 (byte-for-byte fixtures) and an in-package fake device; no real Tuya device has been
@@ -17,6 +38,9 @@ connected yet (`192.168.254.38`, TCP 6668 open, is the candidate). To confirm on
 | Idle timeout | heartbeat every 10 s; reset after 3 unanswered | watch the session stay up for > 5 min |
 | Single client | Smart Life (LAN) and SmartLights can't both hold the connection | open Smart Life while the app is connected |
 | UDP announcements | 6667 ECB (3.3/3.4), 6699 GCM (3.5), every ~5 s | `python -m tinytuya scan` or a 6666/6667 listener |
+
+---
+
 ## 2026-10-27 - TP-Link Kasa/Tapo: open protocol questions (T2.6, no hardware yet)
 
 TPLinkKit was built from python-kasa 0.12.0 behaviour and simulator tests only; none of this has been checked on a real device. Things to confirm when a Kasa or Tapo light is reachable:

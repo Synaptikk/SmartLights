@@ -34,6 +34,14 @@ See `Packages/Providers/HueKit/NOTICES.md` (aiohue test fixture, Apache-2.0; Sig
 
 Protocol ported from python-aidot 0.3.59 (AiDot-Development-Team, MIT); test fixtures generated with it.
 
+## TwinklyKit
+
+See `Packages/Providers/TwinklyKit/NOTICES.md` (xled-docs protocol reference and response examples, MIT, Pavol Babinčák).
+
+## DirigeraKit
+
+See `Packages/Providers/DirigeraKit/NOTICES.md` (protocol ported from Leggin/dirigera, MIT, Leggin; one test fixture copied).
+
 ## TuyaKit: tinytuya
 
 - Source: https://github.com/jasonacox/tinytuya
