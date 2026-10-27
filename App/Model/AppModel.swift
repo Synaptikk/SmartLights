@@ -4,8 +4,8 @@ import LightCore
 
 /// The app's single state store (main actor). Views read it via `@Environment(AppModel.self)`.
 ///
-/// Owns the provider registry, device store, secret store and the app library (rooms, app
-/// scenes). Mirrors provider events into `lightsByID` (`lights` is the sorted array). State properties are settable only so the
+/// Owns the provider registry, device store, secret store and the app library (rooms, groups,
+/// app scenes). Mirrors provider events into `lightsByID` (`lights` is the sorted array). State properties are settable only so the
 /// `AppModel+*.swift` extensions can mutate them; views must go through the methods.
 ///
 /// Extension points for other tasks:
@@ -13,6 +13,7 @@ import LightCore
 ///   `pair(_:using:)`, `discover(brand:options:)`, `ProviderWiring.registerAll(in:)`.
 /// - T1.8 scenes: `createSnapshotScene(name:lightIDs:)`, `recall(_:)`, `saveScene(_:)`.
 /// - T1.10 intents: `send(_:to:)`, `send(_:toRoom:)`, `send(_:toLights:groupKey:)`, `lookup` helpers.
+/// - T2.8 groups: `groups`, `send(_:toGroup:)`, `setSyncSource(_:forGroup:)` (AppModel+Groups.swift).
 /// - T0.7 diagnostics: `registry`, `lights`, `providerHealth`, `lastSeen`, `recentErrors`, `sendNow(_:to:)`;
 ///   every registry event is forwarded to `DiagnosticsCollector.shared.ingest(_:)` and every
 ///   dispatched command reports latency/errors to it.
@@ -33,6 +34,8 @@ final class AppModel {
     var lightsByID: [LightID: Light] = [:]
     /// User-defined rooms, in display order.
     var rooms: [Room] = []
+    /// User-defined cross-brand groups, in display order (a light can be in many groups).
+    var groups: [LightGroup] = []
     /// App scenes (`kind == .app`).
     var appScenes: [LightScene] = []
     /// Vendor scenes from all providers (`kind == .vendor`).
@@ -56,6 +59,8 @@ final class AppModel {
     /// Provider state received while a command was in flight; applied when the burst settles.
     @ObservationIgnored var deferredStates: [LightID: LightState] = [:]
     @ObservationIgnored var dispatchStartedAt: [LightID: Date] = [:]
+    /// Last command Light Sync mirrored per group (skips repeats so echoes cannot ping-pong).
+    @ObservationIgnored var lastMirroredCommand: [LightGroup.ID: LightCommand] = [:]
     @ObservationIgnored var librarySaveTask: Task<Void, Never>?
     @ObservationIgnored var lightCacheTask: Task<Void, Never>?
     @ObservationIgnored private var eventTask: Task<Void, Never>?
@@ -112,6 +117,7 @@ final class AppModel {
         do {
             let library = try await libraryStore.load()
             rooms = library.rooms
+            groups = library.groups
             appScenes = library.scenes
             seenLightIDs = library.seenLightIDs.union(lightsByID.keys)
         } catch {
@@ -224,6 +230,7 @@ final class AppModel {
         }
         lightsByID[id]?.state = state
         scheduleLightCacheSave()
+        mirrorLightSync(from: id)
     }
 
     /// Inserts or replaces a light's metadata, keeping optimistic state while commands are in flight.
@@ -283,7 +290,7 @@ final class AppModel {
     // MARK: Persistence
 
     func scheduleLibrarySave() {
-        let library = AppLibrary(rooms: rooms, scenes: appScenes, seenLightIDs: seenLightIDs)
+        let library = AppLibrary(rooms: rooms, scenes: appScenes, seenLightIDs: seenLightIDs, groups: groups)
         let store = libraryStore
         librarySaveTask?.cancel()
         librarySaveTask = Task { [weak self] in

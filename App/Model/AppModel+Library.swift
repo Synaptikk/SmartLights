@@ -135,14 +135,15 @@ extension AppModel {
         scheduleLibrarySave()
     }
 
-    /// Recalls a scene. App scenes go per light through the coalescer (optimistic UI, rate
-    /// limits); T1.8 may replace this with per-provider optimised writes. Vendor scenes go to
-    /// their provider.
+    /// Recalls a scene. App scenes are grouped by identical command and each bucket goes out as
+    /// one group send through the coalescer (optimistic UI, rate limits); the registry splits it
+    /// by brand and sends to the providers concurrently, so a mixed-brand scene lands together.
+    /// Vendor scenes go to their provider.
     func recall(_ scene: LightScene) {
         switch scene.kind {
         case .app:
-            for (id, command) in scene.commands.sorted(by: { $0.key < $1.key }) {
-                send(command, to: id)
+            for (index, bucket) in Self.commandBuckets(scene.commands).enumerated() {
+                send(bucket.command, toLights: bucket.lightIDs, groupKey: .group("scene-\(scene.id)-\(index)"))
             }
         case .vendor:
             Task {
@@ -153,5 +154,12 @@ extension AppModel {
                 }
             }
         }
+    }
+
+    /// Lights that receive the same command, in a stable order (by first light id).
+    static func commandBuckets(_ commands: [LightID: LightCommand]) -> [(command: LightCommand, lightIDs: [LightID])] {
+        Dictionary(grouping: commands, by: \.value)
+            .map { command, entries in (command: command, lightIDs: entries.map(\.key).sorted()) }
+            .sorted { $0.lightIDs[0] < $1.lightIDs[0] }
     }
 }

@@ -102,6 +102,13 @@ enum PreviewData {
     static let office = Room(name: "Office", lightIDs: [wizColor.id])
     static let bedroom = Room(name: "Bedroom", lightIDs: [aidotRGBW.id, homePlug.id])
 
+    /// Cross-brand group: Hue, WiZ, AiDot and Apple Home lights together.
+    static let everywhere = LightGroup(
+        name: "Downstairs",
+        lightIDs: [hueColor.id, wizColor.id, aidotRGBW.id, homeDimmable.id],
+        transitionMilliseconds: 400
+    )
+
     static let vendorScenes: [LightScene] = [
         LightScene(id: "hue:scene-relax", name: "Relax", kind: .vendor, brand: .hue, roomHint: "Living Room", lightIDs: [hueColor.id, hueAmbiance.id]),
         LightScene(id: "hue:scene-concentrate", name: "Concentrate", kind: .vendor, brand: .hue, roomHint: "Living Room", lightIDs: [hueColor.id, hueAmbiance.id]),
@@ -114,7 +121,8 @@ enum PreviewData {
                 LightScene.snapshot(of: [hueColor, hueAmbiance, aidotRGBW], name: "Evening", id: "preview-evening"),
                 LightScene.snapshot(of: [wizColor], name: "Focus", id: "preview-focus"),
             ],
-            seenLightIDs: Set(lights.map(\.id))
+            seenLightIDs: Set(lights.map(\.id)),
+            groups: [everywhere]
         )
     }
 }
