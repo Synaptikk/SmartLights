@@ -99,6 +99,8 @@ public actor TuyaProvider: LightProvider {
     private var models: [String: TuyaLightModel] = [:]
     private var reachable: [String: Bool] = [:]
     private var sessions: [String: TuyaDeviceSession] = [:]
+    /// When we last closed a connection to a host (discovery probe, failed version attempt).
+    private var lastClosed: [String: ContinuousClock.Instant] = [:]
 
     private let sessionEvents: AsyncStream<TuyaSessionEvent>
     private let sessionContinuation: AsyncStream<TuyaSessionEvent>.Continuation
@@ -256,6 +258,7 @@ public actor TuyaProvider: LightProvider {
         let settings = sessionSettings.link
         var failures: [String] = []
         for version in versions {
+            await waitForHandoff(host)
             let codec = try TuyaSessionCodec(version: version, deviceId: id, localKey: localKey)
             do {
                 let link = try await TuyaLink.open(host: host, codec: codec, connector: configuration.tcp, settings: settings)
@@ -274,6 +277,7 @@ public actor TuyaProvider: LightProvider {
             } catch is CancellationError {
                 throw CancellationError()
             } catch {
+                lastClosed[host] = .now
                 log.info("Tuya \(id): protocol \(version.rawValue) failed: \(error)")
                 failures.append(version.rawValue)
             }
@@ -428,6 +432,7 @@ public actor TuyaProvider: LightProvider {
     /// provisional `ip:<host>` id and the wizard asks for the device id.
     private func reportProbe(host: String, method: DiscoveryMethod, found: FoundSet,
                              report: @Sendable (DiscoveredDevice) -> Void) {
+        lastClosed[host] = .now
         if let record = orderedRecords.first(where: { $0.host == host }) {
             reportKnown(id: record.id, host: host, method: method, found: found, report: report)
             return
@@ -435,6 +440,13 @@ public actor TuyaProvider: LightProvider {
         guard found.insert("ip:\(host)") else { return }
         report(DiscoveredDevice(id: "ip:\(host)", brand: .tuya, name: "Possible Tuya device at \(host)", host: host,
                                 port: Int(configuration.tcpPort), method: method))
+    }
+
+    /// The device frees its single client slot shortly after a close; connecting again at once is refused.
+    private func waitForHandoff(_ host: String) async {
+        guard let closed = lastClosed[host] else { return }
+        let remaining = closed + configuration.connectionHandoffDelay - .now
+        if remaining > .zero { try? await Task.sleep(for: remaining) }
     }
 
     private static func tcpOpen(_ tcp: any TuyaTCPConnector, host: String, port: UInt16, timeout: Duration) async -> Bool {
