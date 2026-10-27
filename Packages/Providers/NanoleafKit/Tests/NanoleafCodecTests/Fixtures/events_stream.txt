@@ -1,0 +1,15 @@
+id: 1
+data: {"events":[{"attr":2,"value":65},{"attr":1,"value":true}]}
+
+id: 1
+data: {"events":[{"attr":6,"value":"hs"},{"attr":3,"value":120},{"attr":4,"value":90}]}
+
+id: 3
+data: {"events":[{"attr":1,"value":"Falling Whites"}]}
+
+id: 2
+data: {"events":[{"attr":2,"value":{"value":30,"max":360,"min":0}}]}
+
+id: 4
+data: {"events":[{"panelId":7397,"gesture":0},{"panelId":-1,"gesture":5}]}
+
