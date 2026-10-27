@@ -38,8 +38,8 @@ Condensed from `research/`. Difficulty 1 = documented local API, 5 = cloud-only 
 | **Tuya white-label** (Feit, Globe, Merkury/Geeni, Teckin, Gosund, Treatlife, Sylvania Wi-Fi, Cree Connected Max) | none | TCP 6668 AES with per-device **local key** (needs Tuya IoT developer project with expiring trial) ; protocol 3.1-3.5 | Tuya OpenAPI / Smart Life QR login (needs our own Tuya developer app credentials) | some SKUs | no | tinytuya (1.8k★), tuya-local (3.6k★), house-control's HouseSmartLife (Swift cloud port) | 4 | T3 advanced, phase 3; Matter SKUs via T0 |
 | **Meross** | none | Local HTTP `/config` signed with MD5(messageId+key+ts); key from cloud login | unofficial, rate-limited | plug only (?) | "HK" SKUs | meross_lan (756★), MerossIot | 3 | T3, phase 3 |
 | **SwitchBot** lights | Hub for BLE-only via cloud | BLE GATT (pySwitchbot, no key needed) | Official v1.1 API, token+secret (tap app version 10×), HMAC-SHA256, 10k/day | via Hub 2/3 bridge (beta) | no | pySwitchbot, OpenWonderLabs/SwitchBotAPI | 2 | T2, phase 3 |
-| **Twinkly** | none | HTTP challenge login, `X-Auth-Token`; UDP 5555 discovery | none | no | Gen II | xled (233★) | 2 | T1, phase 3 (or T0) |
-| **IKEA Dirigera** | hub | Unofficial HTTPS 8443 + token (press hub button) | none | Yes, Matter bridge 1.3 (Oct 2025) | Yes | Leggin/dirigera (221★) | 2 | T0 recommended; T1 phase 3 |
+| **Twinkly** | none | HTTP challenge login, `X-Auth-Token`; UDP 5555 discovery | none | no | Gen II | xled (233★) | 2 | T1, phase 3 (or T0); **implemented (PR)**: `Packages/Providers/TwinklyKit` (T3.4) |
+| **IKEA Dirigera** | hub | Unofficial HTTPS 8443 + token (press hub button) | none | Yes, Matter bridge 1.3 (Oct 2025) | Yes | Leggin/dirigera (221★) | 2 | T0 recommended; T1 phase 3; **implemented (PR)**: `Packages/Providers/DirigeraKit` (T3.5) |
 | **IKEA Trådfri gateway** | hub | CoAP/DTLS 5684 PSK | none | no | Yes | pytradfri | 3 | X (use HK) |
 | **Lutron Caséta** | Smart Bridge | LEAP TLS 8081 with client cert from button pairing | none | no | Yes | pylutron-caseta | 3 | T0 only |
 | **Eve** | home hub for Thread | HAP only | none | Thread devices yes | Yes | — | 1 via HK | T0 |

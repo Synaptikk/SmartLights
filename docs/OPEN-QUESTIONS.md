@@ -18,3 +18,12 @@ The first probe run from the dev PC (`192.168.254.40`, wired to the Sagemcom/Kin
    - Which country is the account registered in? This picks the `us`/`eu`/`jp` API region.
 7. **Test device for writes:** which single bulb per brand may agents toggle? Give a WiZ IP or MAC, a Hue light uuid (from `hue.mjs list`) and an AiDot devId (from `aidot.mjs devices`). Writes run only with `TEST_DEVICE=<that id>` set in the shell.
 8. **Tuya-looking device at `192.168.254.38`** (TCP 6668 open, MAC `fc:3c:d7:ef:a5:ca`): what is it? If it's a light or plug you want in the app, it belongs to the Phase 2 Tuya provider.
+
+## From T3.4 / T3.5 (Twinkly, IKEA DIRIGERA), 2026-10-27
+
+9. **Do you own a Twinkly or an IKEA DIRIGERA hub?** If so, which model and firmware? For Twinkly, the Twinkly app shows the firmware under device settings. For DIRIGERA, the IKEA Home smart app shows it under Hub settings. If you have one, please run the checks marked [verify] in `docs/HARDWARE-NOTES.md`. If you don't, both providers stay simulator-tested only.
+10. **App wiring (not done in this PR, App/ and project.yml were out of scope):**
+    - register `Packages/Providers/TwinklyKit` and `Packages/Providers/DirigeraKit` in `project.yml` (products `TwinklyProvider`, `DirigeraProvider`);
+    - restore and register both providers in `ProviderWiring`;
+    - give DIRIGERA the app's Keychain TOFU pin store;
+    - add `_ihsp._tcp` and `_hap._tcp` to `NSBonjourServices` if DIRIGERA Bonjour discovery should work. Manual IP and the sweep work without them.
