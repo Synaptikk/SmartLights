@@ -382,8 +382,57 @@ public struct HueZigbeeConnectivity: Codable, Sendable, Hashable, Identifiable {
     public var isConnected: Bool { status == nil || status == "connected" }
 }
 
-/// `entertainment_configuration` resource (minimal: used to list areas for phase-3 streaming).
+/// `entertainment_configuration` resource: an Entertainment area that can be streamed to.
 public struct HueEntertainmentConfiguration: Codable, Sendable, Hashable, Identifiable {
+    /// One streaming channel. `channelID` is the byte used in HueStream frames.
+    public struct Channel: Codable, Sendable, Hashable {
+        public struct Member: Codable, Sendable, Hashable {
+            /// The `entertainment` service of the light (not the `light` service).
+            public var service: HueResourceIdentifier?
+            /// Segment index for gradient lights, 0 otherwise.
+            public var index: Int?
+
+            public init(service: HueResourceIdentifier?, index: Int?) {
+                self.service = service
+                self.index = index
+            }
+        }
+
+        public var channelID: Int
+        public var position: Position?
+        public var members: [Member]?
+
+        enum CodingKeys: String, CodingKey {
+            case position, members
+            case channelID = "channel_id"
+        }
+
+        public init(channelID: Int, position: Position? = nil, members: [Member]? = nil) {
+            self.channelID = channelID
+            self.position = position
+            self.members = members
+        }
+    }
+
+    /// Position in the area, each axis -1...1 (x left/right, y front/back, z down/up).
+    public struct Position: Codable, Sendable, Hashable {
+        public var x: Double
+        public var y: Double
+        public var z: Double
+
+        public init(x: Double, y: Double, z: Double) {
+            self.x = x
+            self.y = y
+            self.z = z
+        }
+    }
+
+    public struct StreamProxy: Codable, Sendable, Hashable {
+        /// "auto" | "manual".
+        public var mode: String?
+        public var node: HueResourceIdentifier?
+    }
+
     public var id: String
     public var type: String?
     public var metadata: HueMetadata?
@@ -391,13 +440,38 @@ public struct HueEntertainmentConfiguration: Codable, Sendable, Hashable, Identi
     public var configurationType: String?
     /// "active" | "inactive".
     public var status: String?
+    /// Present while someone streams: the streaming application (`rtype` "auth_v1").
+    public var activeStreamer: HueResourceIdentifier?
+    public var channels: [Channel]?
+    public var streamProxy: StreamProxy?
     public var lightServices: [HueResourceIdentifier]?
 
     enum CodingKeys: String, CodingKey {
-        case id, type, metadata, status
+        case id, type, metadata, status, channels
         case configurationType = "configuration_type"
+        case activeStreamer = "active_streamer"
+        case streamProxy = "stream_proxy"
         case lightServices = "light_services"
     }
+
+    public init(
+        id: String, metadata: HueMetadata? = nil, configurationType: String? = nil, status: String? = nil,
+        activeStreamer: HueResourceIdentifier? = nil, channels: [Channel]? = nil, lightServices: [HueResourceIdentifier]? = nil
+    ) {
+        self.id = id
+        self.type = HueResourceType.entertainmentConfiguration
+        self.metadata = metadata
+        self.configurationType = configurationType
+        self.status = status
+        self.activeStreamer = activeStreamer
+        self.channels = channels
+        self.lightServices = lightServices
+    }
+
+    public var isActive: Bool { status == "active" }
+
+    /// Channel ids usable in HueStream frames (ids outside 0...255 are dropped).
+    public var channelIDs: [UInt8] { (channels ?? []).compactMap { UInt8(exactly: $0.channelID) } }
 }
 
 /// `geofence_client` resource (used only for the event-stream keep-alive workaround).
