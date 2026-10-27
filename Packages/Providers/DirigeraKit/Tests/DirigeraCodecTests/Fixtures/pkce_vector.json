@@ -1,0 +1,5 @@
+{
+ "source": "Python hashlib + base64.urlsafe_b64encode(...).rstrip('=') exactly as Leggin/dirigera hub/auth.py code_challenge()",
+ "verifier": "_-~.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-~.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345",
+ "challenge": "lIauXEQKyqJtEHUNSaG7PDpAjrDWBCae6D_dfz1o_uA"
+}
