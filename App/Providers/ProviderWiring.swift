@@ -5,6 +5,7 @@ import LightCore
 import NetKit
 import WiZKit
 import AiDotKit
+import LIFXProvider
 
 /// Creates the brand providers, restores what the user paired earlier and hooks them into the
 /// app lifecycle (T1.6).
@@ -54,6 +55,14 @@ enum ProviderWiring {
             note("WiZ: restored \(bulbs.count) bulb(s)")
         }
 
+        if await model.registry.provider(for: .lifx) == nil {
+            let lifx = makeLIFX(model: model)
+            let lights = devices.filter { $0.brand == .lifx }
+            await lifx.restore(lights)
+            await install(lifx, in: model)
+            note("LIFX: restored \(lights.count) light(s)")
+        }
+
         if accounts.contains(where: { $0.brand == .appleHome }), await model.registry.provider(for: .appleHome) == nil {
             await install(HomeKitProvider.live(), in: model)
             note("Apple Home: registered")
@@ -81,6 +90,8 @@ enum ProviderWiring {
             provider = makeHue(model: model)
         case .wiz:
             provider = makeWiZ(model: model)
+        case .lifx:
+            provider = makeLIFX(model: model)
         case .appleHome:
             provider = HomeKitProvider.live()
         case .aidot:
@@ -141,6 +152,11 @@ enum ProviderWiring {
         WiZProvider(secrets: model.secretStore)
     }
 
+    @MainActor
+    private static func makeLIFX(model: AppModel) -> LIFXProvider {
+        LIFXProvider.live(secretStore: model.secretStore)
+    }
+
     /// Registers `provider` with the registry (without a refresh) and installs its lifecycle hooks.
     @MainActor
     private static func install(_ provider: any LightProvider, in model: AppModel) async {
@@ -159,6 +175,10 @@ enum ProviderWiring {
         }
         if let wiz = provider as? WiZProvider {
             return .init(brand: .wiz, activate: { await wiz.start() }, deactivate: { await wiz.stop() })
+        }
+        if let lifx = provider as? LIFXProvider {
+            // LIFX has no push; start/stop toggles its state polling.
+            return .init(brand: .lifx, activate: { await lifx.start() }, deactivate: { await lifx.stop() })
         }
         if let aidot = provider as? AiDotProvider {
             return .init(brand: .aidot, activate: { await aidot.start() }, deactivate: { await aidot.stop() })

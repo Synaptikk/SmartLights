@@ -46,6 +46,8 @@ packages:
     path: Packages/Providers/WiZKit
   AiDotKit:
     path: Packages/Providers/AiDotKit
+  LIFXKit:
+    path: Packages/Providers/LIFXKit
 
 targets:
   SmartLights:
@@ -80,6 +82,8 @@ targets:
         product: WiZCodec
       - package: AiDotKit
         product: AiDotKit
+      - package: LIFXKit
+        product: LIFXProvider
       - sdk: HomeKit.framework
     settings:
       base:
