@@ -4,6 +4,26 @@ Observations from real hardware (probe scripts in `tools/probe/`, raw output in 
 
 ---
 
+## 2026-10-27 - Meross and SwitchBot: source contradictions (T3.2, T3.3, no hardware)
+
+No Meross or SwitchBot device was available; these are decisions taken where the sources disagree. Re-check on hardware.
+
+- **SwitchBot `sign` case.** The SwitchBotAPI README prose says to convert the signature to upper case, but its Python and
+  JavaScript samples (and Home Assistant's `switchbot_api`) send the plain base64 of HMAC-SHA256(secret, token + t + nonce).
+  Upper-casing base64 changes the bytes, so SwitchBotKit sends plain base64. If real requests get 401 with a correct
+  token/secret, try the upper-cased variant.
+- **SwitchBot active colour mode.** Status replies carry both `color` and `colorTemperature` with no mode field. SwitchBotKit
+  keeps the mode of its last command, else treats `255:255:255` as colour-temperature mode. Confirm on a Color Bulb.
+- **SwitchBot 401 meaning.** Both bad credentials and the 10,000/day limit answer `Unauthorized`. After a recent success a 401
+  is treated as the limit (no re-auth prompt).
+- **Meross discovery.** meross_lan finds devices from Home Assistant's DHCP watcher (OUIs `48:E1:E9`, `C4:E7:AE`, `34:29:8F:1`);
+  iOS apps cannot see DHCP, so MerossKit sweeps the /24 with a signed `Appliance.System.All` and maps IPs by the uuid in
+  `header.from`. Check how long a full sweep takes on the home network and that devices answer a wrong-key probe with
+  `ERROR 5001` (used to report "key mismatch").
+- **Meross encrypted firmware.** For devices listing `Appliance.Encrypt.ECDHE`, meross_lan's config flow gets the ability in clear
+  text and everything else AES-CBC encrypted; MerossKit does the same. Unverified.
+- **Meross `from` header.** MerossKit sends `from`/`triggerSrc` = `MerossClient` (meross_lan's HTTP value); MerossIot uses an
+  MQTT topic there. Devices are reported to accept any string over HTTP.
 ## 2026-10-27 - Twinkly and DIRIGERA (T3.4, T3.5): not yet seen on hardware
 
 Neither device has been probed; both providers are built from the protocol references and tested only against in-package fakes. Check these on real hardware and correct the providers if they differ:
