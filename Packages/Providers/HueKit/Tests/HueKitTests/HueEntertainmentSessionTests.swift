@@ -203,12 +203,17 @@ struct HueEntertainmentSessionTests {
             provider: try await Self.provider(transport), bridgeID: M.bridgeID, configurationID: Self.area,
             connector: connector, configuration: Self.config { $0.idleTimeout = .milliseconds(600); $0.frameRate = 25 })
 
-        try await session.start()
+        // Channels before start(): the first tick sends at once, so a busy runner cannot let the idle
+        // timer expire before any frame went out.
         await session.setChannels(Self.channels)
+        try await session.start()
         let stopped = await eventually { await session.state == .stopped(.idle) }
         #expect(stopped)
-        #expect(connector.channel.isClosed)
-        #expect(try Self.actions(transport) == ["start", "stop"])
+        // finish() publishes .stopped before it closes DTLS and PUTs {"action":"stop"}: wait for both.
+        let cleanedUp = await eventually {
+            connector.channel.isClosed && (try? Self.actions(transport)) == ["start", "stop"]
+        }
+        #expect(cleanedUp)
         // The last frame was repeated until the idle timeout (600 ms at 25 Hz leaves ample margin on slow CI runners).
         #expect(connector.channel.datagrams.count >= 1)
     }
