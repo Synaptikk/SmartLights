@@ -45,8 +45,10 @@ struct SceneBucketTests {
         let c = LightID(brand: .aidot, stableId: "c")!
         let buckets = AppModel.commandBuckets([a: .turnOn, b: .turnOn, c: .turnOff])
         #expect(buckets.count == 2)
-        #expect(buckets[0].command == .turnOn && buckets[0].lightIDs == [a, b])
-        #expect(buckets[1].command == .turnOff && buckets[1].lightIDs == [c])
+        #expect(buckets.first { $0.command == .turnOn }?.lightIDs == [a, b].sorted())
+        #expect(buckets.first { $0.command == .turnOff }?.lightIDs == [c])
+        // Stable order (by first light id) so repeated recalls reuse the same coalescing slots.
+        #expect(buckets.map { $0.lightIDs[0] } == buckets.map { $0.lightIDs[0] }.sorted())
     }
 }
 
