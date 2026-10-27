@@ -201,10 +201,12 @@ struct HueEntertainmentSessionTests {
         let connector = FakeDTLSConnector()
         let session = HueEntertainmentSession(
             provider: try await Self.provider(transport), bridgeID: M.bridgeID, configurationID: Self.area,
-            connector: connector, configuration: Self.config { $0.idleTimeout = .milliseconds(200); $0.frameRate = 25 })
+            connector: connector, configuration: Self.config { $0.idleTimeout = .milliseconds(500); $0.frameRate = 25 })
 
-        try await session.start()
+        // Channels before start(): the first tick sends at once, so a busy test runner cannot let the
+        // idle timer expire before any frame went out.
         await session.setChannels(Self.channels)
+        try await session.start()
         let stopped = await eventually { await session.state == .stopped(.idle) }
         #expect(stopped)
         #expect(connector.channel.isClosed)
