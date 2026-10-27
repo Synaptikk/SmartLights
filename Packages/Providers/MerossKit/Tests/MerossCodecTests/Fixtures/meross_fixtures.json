@@ -1,0 +1,215 @@
+{
+ "cloud": {
+  "nonce": "ABCDEFGHIJ012345",
+  "params": "eyJlbWFpbCI6ICJ1c2VyQGV4YW1wbGUuY29tIiwgInBhc3N3b3JkIjogImI0Y2Q2YWFjZTI3MGYxYWVmN2MwZjBlZWVlNTRiNWM0IiwgImFjY291bnRDb3VudHJ5Q29kZSI6ICJldSIsICJlbmNyeXB0aW9uIjogMSwgImFncmVlIjogMH0=",
+  "passwordMD5": "b4cd6aace270f1aef7c0f0eeee54b5c4",
+  "sign": "796634eb6d2573a17129159d4656bc0c",
+  "timestamp": 1730000000123
+ },
+ "devlist_ok": {
+  "apiStatus": 0,
+  "data": [
+   {
+    "bindTime": 1650000000,
+    "channels": [
+     {}
+    ],
+    "devIconId": "device045",
+    "devName": "Desk lamp",
+    "deviceType": "msl320cpr",
+    "domain": "eu-iot.meross.com",
+    "fmwareVersion": "4.3.5",
+    "hardwareCapabilities": [],
+    "hdwareVersion": "4.0.0",
+    "iconType": 1,
+    "onlineStatus": 1,
+    "region": "eu",
+    "reservedDomain": "eu-iot.meross.com",
+    "subType": "un",
+    "userDevIcon": "",
+    "uuid": "2106040981431251802148e1e9a1b2c3"
+   },
+   {
+    "channels": [
+     {}
+    ],
+    "devName": "Kettle plug",
+    "deviceType": "mss310",
+    "fmwareVersion": "6.1.8",
+    "hdwareVersion": "6.0.0",
+    "onlineStatus": 1,
+    "subType": "us",
+    "uuid": "1912345678901234567890abcdef0001"
+   }
+  ],
+  "info": "Success"
+ },
+ "encryption": {
+  "ciphertext": "Mr6Wm4Rk+GzJjFf/maTSquJgZxKeSl27E+IafjzL7tfe7OWxrtW3gkJjfYmx2cyl+0a4xZ2LxLkkePAwaPLRVQ==",
+  "derivedKey": "9ddc264799086d187948949def1b2e42",
+  "key": "0123456789abcdef0123456789abcdef",
+  "mac": "48:e1:e9:a1:b2:c3",
+  "plaintext": "{\"header\":{\"messageId\":\"x\"},\"payload\":{\"all\":{}}}",
+  "shortKeyDerived": "6f8f57715090da2632453988d9a1501b",
+  "uuid": "2106040981431251802148e1e9a1b2c3"
+ },
+ "invalid_key_reply": {
+  "header": {
+   "from": "/appliance/2106040981431251802148e1e9a1b2c3/publish",
+   "messageId": "11112222333344445555666677778888",
+   "method": "ERROR",
+   "namespace": "Appliance.System.All",
+   "payloadVersion": 1,
+   "sign": "00",
+   "timestamp": 1670762077,
+   "timestampMs": 1
+  },
+  "payload": {
+   "error": {
+    "code": 5001,
+    "detail": "sign error"
+   }
+  }
+ },
+ "msl320_ability": {
+  "ability": {
+   "Appliance.Control.Light": {
+    "capacity": 15
+   },
+   "Appliance.Control.Light.Effect": {},
+   "Appliance.Control.ToggleX": {},
+   "Appliance.System.All": {}
+  }
+ },
+ "msl320_all": {
+  "header": {
+   "from": "/appliance/2106040981431251802148e1e9a1b2c3/publish",
+   "messageId": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
+   "method": "GETACK",
+   "namespace": "Appliance.System.All",
+   "payloadVersion": 1,
+   "sign": "d5fe6db4829d5e4ca9a42e88f97a9354",
+   "timestamp": 1670762076,
+   "timestampMs": 123
+  },
+  "payload": {
+   "all": {
+    "digest": {
+     "light": {
+      "capacity": 6,
+      "channel": 0,
+      "luminance": 49,
+      "rgb": 16711680,
+      "temperature": 51,
+      "transform": 0
+     },
+     "timerx": [],
+     "togglex": [
+      {
+       "channel": 0,
+       "lmTime": 1670761931,
+       "onoff": 1
+      }
+     ],
+     "triggerx": []
+    },
+    "system": {
+     "firmware": {
+      "compileTime": "2022/08/25-15:57:22",
+      "encrypt": 1,
+      "homekitVersion": "4.1",
+      "innerIp": "192.168.1.50",
+      "port": 443,
+      "server": "eu-iot.meross.com",
+      "userId": 1234567,
+      "version": "4.3.5",
+      "wifiMac": "aa:bb:cc:dd:ee:ff"
+     },
+     "hardware": {
+      "chipType": "rtl8710cm",
+      "macAddress": "48:e1:e9:a1:b2:c3",
+      "subType": "un",
+      "type": "msl320cpr",
+      "uuid": "2106040981431251802148e1e9a1b2c3",
+      "version": "4.0.0"
+     },
+     "online": {
+      "bindId": "sZuTwgzBpBN2TMQI",
+      "status": 1,
+      "who": 1
+     },
+     "time": {
+      "timestamp": 1670762076,
+      "timezone": "Europe/Lisbon"
+     }
+    }
+   }
+  }
+ },
+ "msl450_light_getack": {
+  "light": {
+   "capacity": 13,
+   "channel": 0,
+   "effect": 6,
+   "luminance": 1,
+   "rgb": 62719,
+   "temperature": 44,
+   "transform": 0
+  }
+ },
+ "msl450_togglex_getack": {
+  "channel": 0,
+  "togglex": {
+   "channel": 0,
+   "lmTime": 1672761899,
+   "onoff": 1
+  }
+ },
+ "signatures": [
+  {
+   "key": "0123456789abcdef0123456789abcdef",
+   "messageId": "5c3a4f1e9b2d8c7a6e5f4d3c2b1a0918",
+   "sign": "6300f088fea726b39e2e12b5a818f573",
+   "timestamp": 1670762076
+  },
+  {
+   "key": "",
+   "messageId": "aabbccddeeff00112233445566778899",
+   "sign": "8824914b6985b1b1c7a1ca76e8957733",
+   "timestamp": 1600000000
+  },
+  {
+   "key": "meross-test-key",
+   "messageId": "00000000000000000000000000000000",
+   "sign": "a3aedad3f58d94603e5c6052c2df9da8",
+   "timestamp": 0
+  }
+ ],
+ "signin_ok": {
+  "apiStatus": 0,
+  "data": {
+   "domain": "https://iotx-eu.meross.com",
+   "email": "user@example.com",
+   "key": "0123456789abcdef0123456789abcdef",
+   "mqttDomain": "mqtt-eu.meross.com",
+   "token": "tok-abc",
+   "userid": "1234567"
+  },
+  "info": "Success",
+  "sysStatus": 0,
+  "timeStamp": 1730000000
+ },
+ "signin_redirect": {
+  "apiStatus": 1030,
+  "data": {
+   "domain": "https://iotx-eu.meross.com",
+   "mqttDomain": "mqtt-eu.meross.com"
+  },
+  "info": "redirect"
+ },
+ "signin_wrong_password": {
+  "apiStatus": 1004,
+  "data": {},
+  "info": "Wrong email or password"
+ }
+}
