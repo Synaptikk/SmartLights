@@ -4,6 +4,17 @@ Agents add questions here when they need input only the user can give. Answer in
 
 ---
 
+## From T3.2 / T3.3 (Meross, SwitchBot), 2026-10-27
+
+1. Do you own any **Meross** lights or dimmers? If yes: model (e.g. MSL120, MSL320, MSS560), whether it has the "HK"
+   (HomeKit) or "MA" (Matter) suffix (then Apple Home is the better path), and whether the Meross account uses two-factor
+   authentication.
+2. Do you own any **SwitchBot** lights (Color Bulb, Strip Light, Ceiling Light)? If yes: is Cloud Services on for them, and is
+   there a SwitchBot Hub? A token + secret from the app's Developer Options would let a probe confirm the signing case
+   (see `docs/HARDWARE-NOTES.md`, 2026-10-27).
+
+---
+
 ## From T0.8 hardware probes (2026-10-26)
 
 The first probe run from the dev PC (`192.168.254.40`, wired to the Sagemcom/Kinetic gateway) found **no** WiZ bulbs, Hue bridge or AiDot bulbs. Details are in `docs/HARDWARE-NOTES.md`.

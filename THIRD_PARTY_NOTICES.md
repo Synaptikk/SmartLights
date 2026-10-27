@@ -33,3 +33,13 @@ See `Packages/Providers/HueKit/NOTICES.md` (aiohue test fixture, Apache-2.0; Sig
 ## AiDotKit
 
 Protocol ported from python-aidot 0.3.59 (AiDot-Development-Team, MIT); test fixtures generated with it.
+
+## MerossKit
+
+Protocol ported from albertogeniola/MerossIot (MIT, Copyright (c) 2018 Alberto Geniola) and krahabb/meross_lan (MIT); test
+vectors generated with meross_lan's own functions and emulator traces. See `Packages/Providers/MerossKit/NOTICES.md`.
+
+## SwitchBotKit
+
+Implements the documented SwitchBot API v1.1 (OpenWonderLabs/SwitchBotAPI, no license declared; no code copied).
+See `Packages/Providers/SwitchBotKit/NOTICES.md`.
