@@ -59,7 +59,7 @@ Condensed from `research/`. Difficulty 1 = documented local API, 5 = cloud-only 
 |---|---|---|
 | **Apple HomeKit framework** | One API for everything in Apple Home incl. Matter; needs HomeKit entitlement only; Thread works through the user's HomePod/Apple TV | **Use in v1** as the second provider |
 | **MatterSupport + Matter.framework (own fabric)** | Direct Wi-Fi Matter control without Apple Home | Phase 3; Thread impossible without border router; extra extension + fabric storage |
-| **Home Assistant** (91.7k★) | Integrations for every brand incl. AiDot; REST + WebSocket (`HAKit` Swift client, 55★); HomeKit Bridge re-export; 24/7 automations | Phase 3 provider; recommended to the user if they want automations |
+| **Home Assistant** (91.7k★) | Integrations for every brand incl. AiDot; REST + WebSocket (`HAKit` Swift client, 55★); HomeKit Bridge re-export; 24/7 automations | Phase 3 provider; recommended to the user if they want automations; **implemented (PR)**: WebSocket provider `Packages/Providers/HomeAssistantKit` (T3.6; own `URLSessionWebSocketTask` client instead of HAKit so the codec tests run on Linux) |
 | **Homebridge** (25.5k★) + plugins (hue 924★, govee 592★, tplink 521★, tuya 438★, wiz-lan 136★) | Everything becomes HomeKit | Alternative to HA for the HomeKit-only route; no AiDot plugin |
 | **diyHue** (1.8k★) | Emulates a Hue bridge in front of WiZ, Yeelight, Govee, Kasa, WLED, Shelly, Elgato, HA | Mixed licence, no LIFX/Tuya/Nanoleaf/AiDot; not adopted |
 | **Matterbridge** (996★) | Exposes HA/Zigbee2MQTT entities as Matter | Only useful with HA; not adopted |
