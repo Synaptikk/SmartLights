@@ -18,6 +18,8 @@ struct ContentView: View {
             Tab("Settings", systemImage: "gear") {
                 SettingsView()
             }
+            // Brands whose credentials were rejected (ProviderEvent.needsReauthentication).
+            .badge(model.reauthenticationNeeded.count)
         }
         .overlay(alignment: .bottom) {
             if let toast = model.toast {
