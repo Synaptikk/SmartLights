@@ -14,6 +14,8 @@ Packages/
 │  ├─ WiZKit/        WiZCodec + WiZProvider
 │  ├─ AiDotKit/      AiDotCodec + AiDotProvider
 │  ├─ HomeKitProvider/  (no codec)
+│  ├─ MerossKit/     MerossCodec + MerossProvider
+│  ├─ SwitchBotKit/  SwitchBotCodec + SwitchBotProvider
 │  └─ ...Kit/        one package per further brand
 └─ Simulators/       Fake devices (UDP/TCP/HTTP servers) for tests and previews
 ```

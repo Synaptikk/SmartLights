@@ -1,0 +1,130 @@
+{
+ "command_offline": {
+  "body": {},
+  "message": "device offline",
+  "statusCode": 161
+ },
+ "command_ok": {
+  "body": {},
+  "message": "success",
+  "statusCode": 100
+ },
+ "command_unsupported": {
+  "message": "command is not supported",
+  "statusCode": 160
+ },
+ "devices": {
+  "body": {
+   "deviceList": [
+    {
+     "deviceId": "500291B269BE",
+     "deviceName": "Living Room Humidifier",
+     "deviceType": "Humidifier",
+     "enableCloudService": true,
+     "hubDeviceId": "000000000000"
+    },
+    {
+     "deviceId": "6055F92B4F5A",
+     "deviceName": "Bedroom bulb",
+     "deviceType": "Color Bulb",
+     "enableCloudService": true,
+     "hubDeviceId": "000000000000"
+    },
+    {
+     "deviceId": "C1D2E3F4A5B6",
+     "deviceName": "TV strip",
+     "deviceType": "Strip Light",
+     "enableCloudService": true,
+     "hubDeviceId": "000000000000"
+    },
+    {
+     "deviceId": "F0E1D2C3B4A5",
+     "deviceName": "Ceiling",
+     "deviceType": "Ceiling Light",
+     "enableCloudService": true,
+     "hubDeviceId": "FA7310762361"
+    },
+    {
+     "deviceId": "AA11BB22CC33",
+     "deviceName": "Hallway bulb",
+     "deviceType": "Color Bulb",
+     "enableCloudService": false,
+     "hubDeviceId": "FA7310762361"
+    },
+    {
+     "deviceId": "FA7310762361",
+     "deviceName": "Hub 2",
+     "deviceType": "Hub 2",
+     "hubDeviceId": "000000000000"
+    }
+   ],
+   "infraredRemoteList": [
+    {
+     "deviceId": "02-202008110034-13",
+     "deviceName": "Living Room TV",
+     "hubDeviceId": "FA7310762361",
+     "remoteType": "TV"
+    }
+   ]
+  },
+  "message": "success",
+  "statusCode": 100
+ },
+ "signatures": [
+  {
+   "nonce": "5c2f6b1e-36a4-4d70-9e2c-0f3a5b7c9d11",
+   "secret": "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d",
+   "sign": "MxXzSoI7q8B1P7N2l3AsIV7pnbALMR0KnoTx7toQdh4=",
+   "t": 1661927531000,
+   "token": "4f6a3c2b1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0"
+  },
+  {
+   "nonce": "",
+   "secret": "secret",
+   "sign": "Ttm0ZN0AQN2ebCj4A5Qj0Db63sBTdR36nBgM13GiHqs=",
+   "t": 1700000000000,
+   "token": "token"
+  }
+ ],
+ "status_ceiling": {
+  "body": {
+   "brightness": "35",
+   "colorTemperature": 6500,
+   "deviceId": "F0E1D2C3B4A5",
+   "deviceType": "Ceiling Light",
+   "hubDeviceId": "FA7310762361",
+   "power": "ON"
+  },
+  "message": "success",
+  "statusCode": 100
+ },
+ "status_color_bulb": {
+  "body": {
+   "brightness": 80,
+   "color": "255:0:128",
+   "colorTemperature": 4000,
+   "deviceId": "6055F92B4F5A",
+   "deviceType": "Color Bulb",
+   "hubDeviceId": "000000000000",
+   "power": "on",
+   "version": "V3.1-6.3"
+  },
+  "message": "success",
+  "statusCode": 100
+ },
+ "status_color_bulb_white": {
+  "body": {
+   "brightness": 10,
+   "color": "255:255:255",
+   "colorTemperature": 2700,
+   "deviceId": "6055F92B4F5A",
+   "deviceType": "Color Bulb",
+   "power": "off"
+  },
+  "message": "success",
+  "statusCode": 100
+ },
+ "unauthorized": {
+  "message": "Unauthorized"
+ }
+}

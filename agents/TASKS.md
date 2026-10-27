@@ -107,7 +107,7 @@ Conventions: Swift 6 strict concurrency, `actor` providers, `AsyncStream` for ev
 ## Phase 3: Hard or niche (∥)
 
 - **T3.1 TuyaKit** (tinytuya port 3.3/3.5; local key entry; optional cloud QR login if the user registers Tuya developer credentials).
-- **T3.2 MerossKit**, **T3.3 SwitchBotKit** (cloud + BLE), **T3.4 TwinklyKit**, **T3.5 DirigeraKit**.
+- **T3.2 MerossKit** (implemented (PR): `Packages/Providers/MerossKit`), **T3.3 SwitchBotKit** (cloud + BLE; cloud API implemented (PR): `Packages/Providers/SwitchBotKit`, BLE pending), **T3.4 TwinklyKit**, **T3.5 DirigeraKit**.
 - **T3.6 HomeAssistantKit**: WebSocket via `HAKit`, `light.*` entities, `call_service`, long-lived token guide; this is the route for Zigbee/Sengled/Cync/Wyze and automations.
 - **T3.7 Matter own fabric**: MatterSupport extension, `MTRDeviceControllerFactory`, iCloud Keychain IPK, Wi-Fi only; guide explains the Thread limitation.
 - **T3.8 Hue Entertainment**: DTLS-PSK via NIOTransportServices (see HueEntertainmentKit), HueStream v2 frames, 25-50 Hz, photosensitivity warning.
