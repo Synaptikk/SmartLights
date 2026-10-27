@@ -29,15 +29,13 @@ enum ProviderWiring {
     @MainActor
     static func registerAll(in model: AppModel) async {
         let store = model.deviceStore
-        let devices: [PairedDevice]
-        let accounts: [ProviderAccount]
+        var devices: [PairedDevice] = []
+        var accounts: [ProviderAccount] = []
         do {
             devices = try await store.pairedDevices()
             accounts = try await store.accounts()
         } catch {
             model.record(error: "Could not read paired devices: \(error.localizedDescription)")
-            devices = []
-            accounts = []
         }
 
         if await model.registry.provider(for: .hue) == nil {
