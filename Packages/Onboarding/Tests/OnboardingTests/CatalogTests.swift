@@ -29,17 +29,64 @@ struct CatalogTests {
         }
     }
 
-    @Test func phaseOneBrandsHaveFullGuides() {
-        for brand in [Brand.hue, .wiz, .aidot, .appleHome] {
-            let guide = try! #require(catalog.guide(for: brand))
+    static let phaseOneBrands: [Brand] = [.hue, .wiz, .aidot, .appleHome]
+    static let phaseTwoBrands: [Brand] = [.lifx, .govee, .nanoleaf, .tplink, .yeelight, .elgato, .shelly, .wled, .magicHome]
+
+    @Test func phaseOneBrandsHaveFullGuides() throws {
+        for brand in Self.phaseOneBrands {
+            let guide = try #require(catalog.guide(for: brand))
             #expect(guide.phase == 1)
             #expect(!guide.isStub, "\(brand) should have steps")
         }
-        for brand in Brand.allCases where ![.hue, .wiz, .aidot, .appleHome].contains(brand) {
+    }
+
+    @Test func phaseTwoBrandsHaveFullGuides() throws {
+        for brand in Self.phaseTwoBrands {
+            let guide = try #require(catalog.guide(for: brand))
+            #expect(guide.phase == 2, "\(brand)")
+            #expect(!guide.isStub, "\(brand) should have steps")
+            #expect(guide.section != nil, "\(brand)")
+            #expect(guide.facts != nil, "\(brand)")
+            #expect(guide.prerequisites == [GuideCatalog.iPhoneSetupID], "\(brand)")
+            // Every phase-2 guide finds devices and ends up pairing one (the app stores it).
+            #expect(guide.steps.contains { $0.callback == GuideCallback.discover && $0.actionKind == .scan }, "\(brand)")
+            #expect(guide.steps.contains { $0.callback == GuideCallback.pair }, "\(brand)")
+            #expect(guide.step(id: "verify")?.callback == GuideCallback.verify, "\(brand)")
+            #expect(guide.steps.first?.id == "before", "\(brand)")
+        }
+        // No phase-2 brand guide is left as a stub, and the list above is complete.
+        let phaseTwo = catalog.guides.filter { $0.phase == 2 && $0.listing == .brand }
+        #expect(phaseTwo.allSatisfy { !$0.isStub })
+        #expect(Set(phaseTwo.compactMap(\.brand)) == Set(Self.phaseTwoBrands))
+        #expect(GuideCatalog.phase2.map(\.brand) == Self.phaseTwoBrands)
+    }
+
+    @Test func onlyPhaseThreeBrandsAreStubs() {
+        for brand in Brand.allCases where !(Self.phaseOneBrands + Self.phaseTwoBrands).contains(brand) {
             let guide = catalog.guide(for: brand)
             #expect(guide?.isStub == true, "\(brand) should be a stub for now")
-            #expect((guide?.phase ?? 0) >= 2, "\(brand)")
+            #expect(guide?.phase == 3, "\(brand)")
         }
+    }
+
+    @Test func phaseTwoPairingStepsFollowTheMatrix() throws {
+        let nanoleaf = try #require(catalog.guide(for: .nanoleaf)?.step(id: "hold-power"))
+        #expect(nanoleaf.actionKind == .confirm(button: "Continue"))
+        #expect(nanoleaf.callback == GuideCallback.pair)
+        let tplink = try #require(catalog.guide(for: .tplink)?.step(id: "credentials"))
+        #expect(tplink.callback == GuideCallback.pair)
+        let govee = try #require(catalog.guide(for: .govee)?.step(id: "api-key"))
+        #expect(govee.callback == GuideCallback.importKey)
+        #expect(govee.isOptional)
+        if case .secureText(let field) = govee.actionKind {
+            #expect(field.contentType == .token)
+        } else {
+            Issue.record("Govee API key must be secure text")
+        }
+        let lifxToken = try #require(catalog.guide(for: .lifx)?.step(id: "cloud-token"))
+        #expect(lifxToken.isOptional)
+        let wled = try #require(catalog.guide(for: .wled)?.step(id: "wifi-setup"))
+        #expect(wled.isOptional)
     }
 
     @Test func genericAppleSideGuidesExist() throws {
@@ -77,7 +124,13 @@ struct CatalogTests {
         #expect(catalog.guide(for: .nanoleaf)?.needsVerification == true)
         #expect(catalog.guide(for: .dirigera)?.needsVerification == true)
         // Plain facts carry no marker.
-        #expect(catalog.guide(for: .elgato)?.needsVerification == false)
+        let govee = try #require(catalog.guide(for: .govee))
+        #expect(govee.step(id: "before")?.containsUnverifiedCopy == true) // "[verify path]" on LAN Control
+        let nanoleaf = try #require(catalog.guide(for: .nanoleaf))
+        #expect(nanoleaf.step(id: "hold-power")?.needsVerification == true) // hold time 5 s vs 5-7 s
+        for brand in [Brand.elgato, .lifx, .tplink, .yeelight, .shelly, .wled, .magicHome] {
+            #expect(catalog.guide(for: brand)?.needsVerification == false, "\(brand)")
+        }
         #expect(hue.step(id: "before")?.containsUnverifiedCopy == false)
     }
 

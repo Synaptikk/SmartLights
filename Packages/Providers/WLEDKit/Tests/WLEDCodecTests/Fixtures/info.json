@@ -1,0 +1,5 @@
+{"ver":"0.14.4","vid":2405180,"leds":{"count":60,"pwr":0,"fps":42,"maxpwr":850,"maxseg":32,"seglc":[1],"lc":1,"rgbw":false,"wv":0,"cct":0},
+ "str":false,"name":"Kitchen Strip","udpport":21324,"live":false,"liveseg":-1,"lm":"","lip":"","ws":0,"fxcount":187,"palcount":71,"cpalcount":0,
+ "maps":[{"id":0}],"wifi":{"bssid":"AA:BB:CC:DD:EE:FF","rssi":-55,"signal":90,"channel":6},"fs":{"u":12,"t":983,"pmt":0},"ndc":0,
+ "arch":"esp32","core":"v3.3.6-16-gcc5440f6a2","lwip":0,"freeheap":179756,"uptime":12345,"time":"2026-10-27, 10:00:00","opt":79,
+ "brand":"WLED","product":"FOSS","mac":"a4cf12fdaea8","ip":"192.168.1.50"}

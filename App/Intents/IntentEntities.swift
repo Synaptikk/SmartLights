@@ -2,31 +2,11 @@ import AppIntents
 import Foundation
 import LightCore
 
+// Entity types live in Extensions/Widgets/Shared/IntentEntityTypes.swift (compiled into the app and
+// the widget extension). The queries below are the app-process ones (backed by `AppModel`); the
+// extension has its own snapshot-backed queries with the same names (WidgetEntityQueries.swift).
+
 // MARK: - Light
-
-/// A light as Siri / Shortcuts see it. `id` is the stable `LightID` string ("wiz:a8bb50..."),
-/// never an IP, so saved shortcuts survive DHCP changes.
-struct LightEntity: AppEntity, Identifiable {
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = "Light"
-    static let defaultQuery = LightEntityQuery()
-
-    let id: String
-    let name: String
-    let brandName: String
-    let roomName: String?
-    let isAppleHome: Bool
-
-    var displayRepresentation: DisplayRepresentation {
-        let subtitle = [brandName, roomName].compactMap { $0 }.joined(separator: " · ")
-        return DisplayRepresentation(
-            title: "\(name)",
-            subtitle: "\(subtitle)",
-            image: .init(systemName: "lightbulb.fill")
-        )
-    }
-
-    var lightID: LightID? { LightID(id) }
-}
 
 extension LightEntity {
     init(_ light: Light, roomName: String?) {
@@ -38,6 +18,8 @@ extension LightEntity {
             isAppleHome: light.brand == .appleHome
         )
     }
+
+    var lightID: LightID? { LightID(id) }
 }
 
 struct LightEntityQuery: EntityStringQuery {
@@ -65,26 +47,6 @@ struct LightEntityQuery: EntityStringQuery {
 }
 
 // MARK: - Room
-
-struct RoomEntity: AppEntity, Identifiable {
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = "Room"
-    static let defaultQuery = RoomEntityQuery()
-
-    /// `Room.id` UUID string.
-    let id: String
-    let name: String
-    let lightCount: Int
-
-    var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(
-            title: "\(name)",
-            subtitle: "\(lightCount == 1 ? "1 light" : "\(lightCount) lights")",
-            image: .init(systemName: "square.split.2x2")
-        )
-    }
-
-    var roomID: Room.ID? { UUID(uuidString: id) }
-}
 
 extension RoomEntity {
     init(_ room: Room) {
@@ -117,20 +79,6 @@ struct RoomEntityQuery: EntityStringQuery {
 }
 
 // MARK: - Scene
-
-/// An app scene (snapshot across brands) or a vendor scene (Hue scene, ...).
-struct SceneEntity: AppEntity, Identifiable {
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = "Scene"
-    static let defaultQuery = SceneEntityQuery()
-
-    let id: String
-    let name: String
-    let detail: String
-
-    var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(name)", subtitle: "\(detail)", image: .init(systemName: "sparkles"))
-    }
-}
 
 extension SceneEntity {
     init(_ scene: LightScene) {

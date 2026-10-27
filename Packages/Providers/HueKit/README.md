@@ -1,11 +1,11 @@
 # HueKit
 
-Philips Hue bridge support for SmartLights. Local only: CLIP v2 over HTTPS on the LAN, no Hue account and no cloud. Task T1.1. Background research: `research/research_hue.md` §1, §5, §6, §9.
+Philips Hue bridge support for SmartLights. Local only: CLIP v2 over HTTPS on the LAN, no Hue account and no cloud. Tasks T1.1 and T3.8 (Entertainment streaming). Background research: `research/research_hue.md` §1, §2, §5, §6, §9.
 
 | Product | Builds on | Contains |
 |---|---|---|
-| `HueCodec` | Linux + Apple | Lenient Codable models for `light`, `grouped_light`, `room`, `zone`, `scene`, `device`, `bridge`, `zigbee_connectivity`, `entertainment_configuration`, `geofence_client`. Also the `{errors,data}` envelope, the SSE event model, `HueResourceStore` (raw + typed mirror, partial-update merge, mapping to `Light`/`LightScene`, resync diff), request bodies, the group planner, v1 pairing and `/api/config` parsing, `discovery.meethue.com` parsing and `HueError` mapping |
-| `HueKit` | Linux + Apple | `HueProvider` actor (`LightProvider`) running on an injected `HueTransport`, plus `HueRootCertificates`. `URLSessionHueTransport` (URLSession, NetKit `TrustingSessionDelegate`/`SSEClient`/`BonjourBrowser`) is Apple-only |
+| `HueCodec` | Linux + Apple | Lenient Codable models for `light`, `grouped_light`, `room`, `zone`, `scene`, `device`, `bridge`, `zigbee_connectivity`, `entertainment_configuration`, `geofence_client`. Also the `{errors,data}` envelope, the SSE event model, `HueResourceStore` (raw + typed mirror, partial-update merge, mapping to `Light`/`LightScene`, resync diff), request bodies, the group planner, v1 pairing and `/api/config` parsing, `discovery.meethue.com` parsing and `HueError` mapping. HueStream v2 frame encoder/decoder (`HueStreamFrame`), `HueEntertainmentAction` and `HueClientKey` (PSK hex decoding) |
+| `HueKit` | Linux + Apple | `HueProvider` actor (`LightProvider`) running on an injected `HueTransport`, plus `HueRootCertificates`. `URLSessionHueTransport` (URLSession, NetKit `TrustingSessionDelegate`/`SSEClient`/`BonjourBrowser`) is Apple-only. `HueEntertainmentSession` (send loop, idle stop) runs on an injected `HueDTLSConnector`; `NWDTLSConnector` (Network.framework DTLS-PSK) is Apple-only |
 
 The provider logic is platform-neutral, so `swift test` in the `swift:6.1` container covers it with a mock transport. The `FakeHueBridge` integration tests (`Tests/HueKitTests/FakeHueBridgeIntegrationTests.swift`) exercise the real URLSession transport, so they run on macOS CI only.
 
@@ -120,6 +120,48 @@ The returned `PairedDevice` has `id = BRIDGEID`, `hostHint`, `port`, and `metada
 - [ ] `scene` `recall.action` values (`active`, `dynamic_palette`, `static`) and `dynamics.duration` limits.
 - [ ] Whether `discovery.meethue.com` documents a rate limit (we poll at most once per minute).
 - [ ] Bridge Pro: certificate CN format and whether any CLIP v2 differences affect lights, scenes or the event stream.
+
+## Entertainment streaming (T3.8)
+
+Fast colour streaming to an Entertainment area (`entertainment_configuration`), as used for sync and music effects. `research/research_hue.md` §2.
+
+```swift
+let areas = try await hue.entertainmentConfigurations(bridgeID: id)          // pick one, show its name
+var config = HueEntertainmentSession.Configuration()
+config.photosensitivityWarningAcknowledged = userAcceptedWarning               // required, see below
+let session = HueEntertainmentSession(provider: hue, bridgeID: id, configurationID: area.id, configuration: config)
+await session.setChannels(area.channelIDs.map { .rgb($0, red: 1, green: 0.2, blue: 0) })
+try await session.start()
+// every animation frame (any rate; the session sends at 25...50 Hz):
+await session.setChannels(next)
+await session.stop()                                                          // lights return to their previous state
+```
+
+What `start()` does:
+1. Throws `photosensitivityWarningNotAcknowledged` unless the app set the flag.
+2. Reads the app key (PSK identity) and `clientkey` (PSK, 32 hex digits → 16 bytes) from `SecretStore`. A bridge paired without `generateclientkey` gives `missingClientKey`: pair again.
+3. `GET entertainment_configuration/{id}`. If `status == "active"` another app is streaming, and it throws `areaInUse` unless `takeOverActiveStream` is set (same default as HueEntertainmentKit's `.failIfActive`).
+4. `PUT entertainment_configuration/{id}` `{"action":"start"}`.
+5. DTLS 1.2 to `<bridge host>:2100` with `NWDTLSConnector`: `NWProtocolTLS.Options` with min/max `DTLSv12`, `sec_protocol_options_append_tls_ciphersuite(TLS_PSK_WITH_AES_128_GCM_SHA256 = 0x00A8)`, `sec_protocol_options_add_pre_shared_key(psk, identity)`, `NWParameters(dtls:udp:)`. The handshake must finish within `handshakeTimeout` (5 s); otherwise it sends `{"action":"stop"}` and throws.
+6. A send loop at `frameRate` (default 50, clamped to 25...50 Hz) sends one HueStream v2 datagram per tick (more than 20 channels: several datagrams with the same sequence id). It re-sends the last colours on every tick, which is also what keeps the bridge streaming (it drops the area after a few seconds without traffic). Ticks are not made up when the loop falls behind.
+
+The session stops (closes DTLS and sends `{"action":"stop"}`) on `stop()`, when `setChannels` has not been called for `idleTimeout` (default 10 s, `StopReason.idle`), or when a send fails (`.failed`). `stateUpdates` reports `.starting`, `.streaming` and `.stopped(reason)`.
+
+HueStream v2 datagram (`HueStreamFrame`, big-endian): `"HueStream"`, `0x02 0x00`, sequence, `0x00 0x00`, colour space (`0x00` RGB, `0x01` xy + brightness), `0x00`, 36-byte lower-case configuration id, then up to 20 × (channel id, three UInt16). `HueStreamChannel.rgb(...)` / `.xy(...)` scale 0...1 to 0...65535.
+
+### Photosensitivity warning (app layer, required)
+
+Signify's developer terms require a health warning before fast or strobing effects. The session enforces that the app asked: `start()` throws until `photosensitivityWarningAcknowledged` is true. The app must:
+- show the warning (the text already used in `App/Features/Lights/LightDetailView.swift`) before the first Entertainment session and before any effect that flashes, and set the flag only after the user accepts;
+- not set the flag silently or from a stored default the user never saw;
+- offer a visible Stop control while streaming; stopping restores the previous light state.
+
+### Tests
+
+- `HueCodecTests/HueStreamTests.swift` (Linux): byte-exact RGB and xy frames against bytes produced independently with Python `struct.pack`, header offsets, id validation, 20-channel limit and splitting, quantisation, decode round trip, PSK hex decoding, `entertainment_configuration` decoding.
+- `HueKitTests/HueEntertainmentSessionTests.swift` (Linux + macOS, fake `HueDTLSConnector`): start/stop PUT bodies, credentials, photosensitivity gate, frame rate and sequence ids, idle auto-stop, `areaInUse` and take-over, stop after a handshake or send failure.
+- `HueKitTests/DTLSLoopbackTests.swift` (macOS CI only): a DTLS 1.2 PSK echo server on loopback built with Network.framework `NWListener` and the same parameters. It checks the handshake, an echoed frame, that a wrong PSK fails, and a full session streaming to it. swift-nio-ssl has no DTLS support, so the echo server cannot be built with NIO (and so cannot run on Linux).
+- Not covered without hardware: that a real bridge accepts the cipher suite negotiated by Apple's DTLS stack. HueEntertainmentKit uses the same options against real bridges. To verify on hardware, see `docs/HARDWARE-NOTES.md` (T3.8).
 
 ## Signify developer terms (must ship with the app)
 
