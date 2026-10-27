@@ -48,6 +48,34 @@ packages:
     path: Packages/Providers/AiDotKit
   LIFXKit:
     path: Packages/Providers/LIFXKit
+  NanoleafKit:
+    path: Packages/Providers/NanoleafKit
+  YeelightKit:
+    path: Packages/Providers/YeelightKit
+  GoveeKit:
+    path: Packages/Providers/GoveeKit
+  ElgatoKit:
+    path: Packages/Providers/ElgatoKit
+  WLEDKit:
+    path: Packages/Providers/WLEDKit
+  ShellyKit:
+    path: Packages/Providers/ShellyKit
+  MagicHomeKit:
+    path: Packages/Providers/MagicHomeKit
+  TPLinkKit:
+    path: Packages/Providers/TPLinkKit
+  TuyaKit:
+    path: Packages/Providers/TuyaKit
+  TwinklyKit:
+    path: Packages/Providers/TwinklyKit
+  DirigeraKit:
+    path: Packages/Providers/DirigeraKit
+  HomeAssistantKit:
+    path: Packages/Providers/HomeAssistantKit
+  MerossKit:
+    path: Packages/Providers/MerossKit
+  SwitchBotKit:
+    path: Packages/Providers/SwitchBotKit
 
 targets:
   SmartLights:
@@ -87,6 +115,34 @@ targets:
         product: AiDotKit
       - package: LIFXKit
         product: LIFXProvider
+      - package: NanoleafKit
+        product: NanoleafProvider
+      - package: YeelightKit
+        product: YeelightProvider
+      - package: GoveeKit
+        product: GoveeProvider
+      - package: ElgatoKit
+        product: ElgatoProvider
+      - package: WLEDKit
+        product: WLEDProvider
+      - package: ShellyKit
+        product: ShellyProvider
+      - package: MagicHomeKit
+        product: MagicHomeProvider
+      - package: TPLinkKit
+        product: TPLinkProvider
+      - package: TuyaKit
+        product: TuyaKit
+      - package: TwinklyKit
+        product: TwinklyProvider
+      - package: DirigeraKit
+        product: DirigeraProvider
+      - package: HomeAssistantKit
+        product: HomeAssistantKit
+      - package: MerossKit
+        product: MerossProvider
+      - package: SwitchBotKit
+        product: SwitchBotProvider
       - sdk: HomeKit.framework
     settings:
       base:

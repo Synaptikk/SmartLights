@@ -10,16 +10,16 @@ extension GuideCatalog {
     public static let phase2: [BrandGuide] = [lifx, govee, nanoleaf, tplink, yeelight, elgato, shelly, wled, magicHome]
 
     /// "Add by IP" step shared by the LAN brands.
-    private static func manualIPStep(_ prompt: RichText) -> GuideStep {
+    static func manualIPStep(_ prompt: RichText) -> GuideStep {
         GuideStep(id: "manual-ip", title: "Add by IP", kind: .action(.text(manualIPField), prompt: prompt), isOptional: true)
     }
 
     /// Final "add the devices the scan found" step for brands with no pairing action.
-    private static func addStep(_ prompt: RichText = "Pick the devices to add. Each one is stored by its stable id; the IP address is only a hint.") -> GuideStep {
+    static func addStep(_ prompt: RichText = "Pick the devices to add. Each one is stored by its stable id; the IP address is only a hint.") -> GuideStep {
         GuideStep(id: "add", title: "Add your devices", kind: .action(.confirm(button: "Add"), prompt: prompt), callback: GuideCallback.pair)
     }
 
-    private static func verifyStep(_ noun: String) -> GuideStep {
+    static func verifyStep(_ noun: String) -> GuideStep {
         GuideStep(
             id: "verify",
             title: "Check a \(noun)",
@@ -69,6 +69,7 @@ extension GuideCatalog {
                     .secureText(InputField(key: "token", label: "LIFX cloud token", contentType: .token)),
                     prompt: "Optional: paste a LIFX cloud token from [cloud.lifx.com/settings](https://cloud.lifx.com/settings) for away-from-home control (120 requests/min). Stored in Keychain."
                 ),
+                callback: GuideCallback.importKey,
                 isOptional: true
             ),
             verifyStep("bulb"),

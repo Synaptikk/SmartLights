@@ -93,3 +93,27 @@ No code copied. Protocol details from aioshelly and Home Assistant's `shelly` in
 ## MagicHomeKit
 
 No code copied. flux_led (LGPL-3.0) was used only as a protocol reference (byte layouts, model-id table data, test byte vectors); the Swift code is an independent implementation. See `Packages/Providers/MagicHomeKit/NOTICES.md`.
+
+## LIFXKit
+
+No code copied. Message ids and layouts from the LIFX LAN protocol documentation and `LIFX/public-protocol`, product table from `LIFX/products`. See `Packages/Providers/LIFXKit/NOTICES.md`.
+
+## GoveeKit
+
+LAN SKU capability table derived from govee-local-api (Apache-2.0); no code copied. See `Packages/Providers/GoveeKit/NOTICES.md`.
+
+## YeelightKit
+
+Per-model colour-temperature ranges and light-kind detection order from python-yeelight (BSD-style license, Stavros Korokithakis); no code copied. See `Packages/Providers/YeelightKit/NOTICES.md`.
+
+## ElgatoKit
+
+No code copied; references only (python-elgato MIT, Home Assistant `elgato` Apache-2.0). See `Packages/Providers/ElgatoKit/NOTICES.md`.
+
+## WLEDKit
+
+No code copied; written from the WLED JSON API documentation (WLED firmware EUPL-1.2 and Home Assistant `wled` consulted only). See `Packages/Providers/WLEDKit/NOTICES.md`.
+
+## HomeAssistantKit
+
+No code included. Example messages from the Home Assistant developer documentation and fixtures built from Home Assistant core (Apache-2.0). See `Packages/Providers/HomeAssistantKit/NOTICES.md`.

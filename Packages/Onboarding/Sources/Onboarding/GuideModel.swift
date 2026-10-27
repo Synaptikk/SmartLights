@@ -160,9 +160,9 @@ public enum GuideCallback {
     public static let discover = "discover"
     /// Run `LightProvider.pair` with the runner as `PairingInteraction`; answer `.paired`.
     public static let pair = "pair"
-    /// Cloud login (AiDot); the provider prompts for country/username/password.
+    /// Cloud login (AiDot, Meross, SwitchBot); the provider prompts for its credentials.
     public static let login = "login"
-    /// Signing key / token import (WiZ); the provider prompts for a file or text.
+    /// Signing key / token import (WiZ key, Govee API key, LIFX cloud token); the provider prompts.
     public static let importKey = "importKey"
     /// Blink a paired light so the user can confirm it works.
     public static let verify = "verify"

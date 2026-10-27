@@ -48,6 +48,7 @@
 	<array>
 		<string>_hue._tcp</string>
 		<string>_nanoleafapi._tcp</string>
+		<string>_nanoleafms._tcp</string>
 		<string>_elg._tcp</string>
 		<string>_shelly._tcp</string>
 		<string>_wled._tcp</string>
@@ -55,6 +56,9 @@
 		<string>_miio._udp</string>
 		<string>_lutron._tcp</string>
 		<string>_http._tcp</string>
+		<string>_home-assistant._tcp</string>
+		<string>_ihsp._tcp</string>
+		<string>_hap._tcp</string>
 		<string>_matter._tcp</string>
 		<string>_matterc._udp</string>
 		<string>_matterd._udp</string>

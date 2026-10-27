@@ -60,7 +60,10 @@ enum TestCommandState: Sendable, Equatable {
 @MainActor
 @Observable
 final class DiagnosticsModel {
-    nonisolated static let bonjourTypes = ["_hue._tcp", "_nanoleafapi._tcp", "_elg._tcp", "_shelly._tcp", "_wled._tcp", "_lifx._udp"]
+    nonisolated static let bonjourTypes = [
+        "_hue._tcp", "_nanoleafapi._tcp", "_elg._tcp", "_shelly._tcp", "_wled._tcp", "_lifx._udp",
+        "_miio._udp", "_home-assistant._tcp", "_ihsp._tcp",
+    ]
     nonisolated static let bonjourDuration: Duration = .seconds(5)
 
     private(set) var localNetwork: LocalNetworkPermission?

@@ -61,12 +61,49 @@ struct CatalogTests {
         #expect(GuideCatalog.phase2.map(\.brand) == Self.phaseTwoBrands)
     }
 
-    @Test func onlyPhaseThreeBrandsAreStubs() {
-        for brand in Brand.allCases where !(Self.phaseOneBrands + Self.phaseTwoBrands).contains(brand) {
-            let guide = catalog.guide(for: brand)
-            #expect(guide?.isStub == true, "\(brand) should be a stub for now")
-            #expect(guide?.phase == 3, "\(brand)")
+    static let phaseThreeBrands: [Brand] = [.tuya, .meross, .switchbot, .twinkly, .dirigera, .homeAssistant]
+    /// Cloud-account brands sign in instead of scanning.
+    static let loginBrands: Set<Brand> = [.meross, .switchbot]
+
+    @Test func phaseThreeBrandsHaveFullGuides() throws {
+        #expect(Set(Self.phaseOneBrands + Self.phaseTwoBrands + Self.phaseThreeBrands) == Set(Brand.allCases))
+        #expect(GuideCatalog.phase3.map(\.brand) == Self.phaseThreeBrands)
+        for brand in Self.phaseThreeBrands {
+            let guide = try #require(catalog.guide(for: brand))
+            #expect(guide.phase == 3, "\(brand)")
+            #expect(!guide.isStub, "\(brand) should have steps")
+            #expect(guide.facts != nil, "\(brand)")
+            #expect(guide.steps.first?.id == "before", "\(brand)")
+            #expect(guide.step(id: "verify")?.callback == GuideCallback.verify, "\(brand)")
+            if Self.loginBrands.contains(brand) {
+                #expect(guide.steps.contains { $0.callback == GuideCallback.login }, "\(brand)")
+                #expect(!guide.steps.contains { $0.callback == GuideCallback.discover }, "\(brand)")
+            } else {
+                #expect(guide.steps.contains { $0.callback == GuideCallback.discover && $0.actionKind == .scan }, "\(brand)")
+                #expect(guide.steps.contains { $0.callback == GuideCallback.pair }, "\(brand)")
+            }
         }
+        // §-numbered guides keep their doc section; Home Assistant comes from its package README.
+        for (brand, section) in [(Brand.tuya, "§10"), (.meross, "§15"), (.switchbot, "§16"), (.twinkly, "§17"), (.dirigera, "§18")] {
+            #expect(catalog.guide(for: brand)?.section == section, "\(brand)")
+        }
+        // No brand guide is a stub any more.
+        #expect(!catalog.guides.contains { $0.listing == .brand && $0.isStub })
+    }
+
+    @Test func phaseThreePairingStepsFollowTheMatrix() throws {
+        let dirigera = try #require(catalog.guide(for: .dirigera)?.step(id: "action-button"))
+        #expect(dirigera.actionKind == .confirm(button: "Continue"))
+        #expect(dirigera.callback == GuideCallback.pair)
+        // Tuya and Home Assistant can be added without a scan (the provider asks for everything).
+        #expect(catalog.guide(for: .tuya)?.step(id: "scan")?.isOptional == true)
+        #expect(catalog.guide(for: .homeAssistant)?.step(id: "scan")?.isOptional == true)
+        #expect(catalog.guide(for: .tuya)?.step(id: "add")?.callback == GuideCallback.pair)
+        #expect(catalog.guide(for: .homeAssistant)?.step(id: "connect")?.callback == GuideCallback.pair)
+        #expect(catalog.guide(for: .meross)?.step(id: "sign-in")?.callback == GuideCallback.login)
+        #expect(catalog.guide(for: .switchbot)?.step(id: "token")?.callback == GuideCallback.login)
+        // Optional key/token entry is provider-driven so the secret goes straight to the Keychain.
+        #expect(catalog.guide(for: .lifx)?.step(id: "cloud-token")?.callback == GuideCallback.importKey)
     }
 
     @Test func phaseTwoPairingStepsFollowTheMatrix() throws {
