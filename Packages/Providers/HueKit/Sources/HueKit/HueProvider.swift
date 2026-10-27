@@ -159,6 +159,11 @@ public actor HueProvider: LightProvider {
 
     public var bridgeIDs: [String] { bridgeStates.keys.sorted() }
 
+    /// Cached host (IP or name, no port) of a paired bridge; the Entertainment stream uses it for UDP 2100.
+    public func host(bridgeID: String) -> String? { bridgeStates[bridgeID.uppercased()]?.host }
+
+    func secretString(_ key: SecretKey) async throws -> String? { try await secrets.string(for: key) }
+
     /// Whether the event stream of `bridgeID` is currently connected.
     public func isEventStreamConnected(bridgeID: String) -> Bool {
         bridgeStates[bridgeID.uppercased()]?.connected ?? false

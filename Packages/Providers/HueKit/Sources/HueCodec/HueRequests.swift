@@ -132,3 +132,21 @@ public struct HueGeofenceClientBody: Codable, Sendable, Hashable {
         return namePrefix + suffix
     }
 }
+
+/// `PUT /clip/v2/resource/entertainment_configuration/{id}` body: `{"action":"start"}` opens the
+/// bridge's DTLS server on UDP 2100 for this area, `{"action":"stop"}` ends streaming and lets the
+/// lights return to their previous state.
+public struct HueEntertainmentAction: Codable, Sendable, Hashable {
+    public enum Action: String, Codable, Sendable {
+        case start, stop
+    }
+
+    public var action: Action
+
+    public static let start = HueEntertainmentAction(action: .start)
+    public static let stop = HueEntertainmentAction(action: .stop)
+
+    public init(action: Action) { self.action = action }
+
+    public func jsonData() throws -> Data { try JSONEncoder().encode(self) }
+}
