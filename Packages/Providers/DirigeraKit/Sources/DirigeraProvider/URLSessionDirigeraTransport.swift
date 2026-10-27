@@ -94,8 +94,19 @@ public final class URLSessionDirigeraTransport: DirigeraTransport {
         let task = session(forHub: request.hubID).webSocketTask(with: urlRequest)
         let (stream, continuation) = AsyncThrowingStream<DirigeraStreamEvent, any Error>.makeStream()
         let pingInterval = request.pingInterval
+        // URLSessionWebSocketTask has no "opened" callback outside a session delegate (the hub
+        // session's delegate is NetKit's TrustingSessionDelegate), and the hub may stay silent
+        // until something changes. So `.connected` is announced on the first pong (a ping sent
+        // right after resume) or on the first message, whichever comes first.
+        let once = OnceFlag()
+        let announce: @Sendable () -> Void = {
+            if once.claim() { continuation.yield(.connected) }
+        }
         let reader = Task {
             task.resume()
+            task.sendPing { error in
+                if error == nil { announce() }
+            }
             let pinger = Task {
                 while !Task.isCancelled {
                     try? await Task.sleep(for: pingInterval)
@@ -104,14 +115,10 @@ public final class URLSessionDirigeraTransport: DirigeraTransport {
                 }
             }
             defer { pinger.cancel() }
-            var announced = false
             do {
                 while !Task.isCancelled {
                     let message = try await task.receive()
-                    if !announced {
-                        announced = true
-                        continuation.yield(.connected)
-                    }
+                    announce()
                     switch message {
                     case .string(let text): continuation.yield(.message(text))
                     case .data(let data): continuation.yield(.message(String(decoding: data, as: UTF8.self)))
@@ -170,6 +177,18 @@ public final class URLSessionDirigeraTransport: DirigeraTransport {
 
     public func sweepHosts() -> [String] {
         SubnetSweeper.currentWiFiHosts().map(\.description)
+    }
+}
+
+/// True from `claim()` exactly once, from any thread.
+final class OnceFlag: Sendable {
+    private let claimed = Mutex(false)
+
+    func claim() -> Bool {
+        claimed.withLock { value in
+            defer { value = true }
+            return !value
+        }
     }
 }
 
