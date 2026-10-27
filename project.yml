@@ -56,7 +56,10 @@ targets:
           - "Resources/Info.plist"
           - "*.entitlements"
           - "**/README.md"
+      # Widget snapshot, shared entity types and widget/control action intents (T2.7).
+      - path: Extensions/Widgets/Shared
     dependencies:
+      - target: SmartLightsWidgets
       - package: LightCore
         product: LightCore
       - package: NetKit
@@ -105,6 +108,34 @@ targets:
         # TEST_HOST / BUNDLE_LOADER are set automatically by XcodeGen because
         # this target depends on the SmartLights app target.
 
-# Extensions (Extensions/Widgets, Extensions/Intents, Extensions/MatterSetup)
-# are added as targets here by their own tasks; each must share the App Group
+  # Widgets and Control Center controls (T2.7). Renders the App Group snapshot
+  # written by AppModel; action intents run in the app process.
+  SmartLightsWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: Extensions/Widgets
+        excludes:
+          - "Info.plist"
+          - "*.entitlements"
+          - "**/README.md"
+    dependencies:
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+    settings:
+      base:
+        PRODUCT_NAME: SmartLightsWidgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.sinap.smartlights.widgets
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: Extensions/Widgets/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_ENTITLEMENTS: Extensions/Widgets/SmartLightsWidgets.entitlements
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) WIDGET_EXTENSION"
+        TARGETED_DEVICE_FAMILY: "1"
+        APPLICATION_EXTENSION_API_ONLY: YES
+
+# Other extensions (Extensions/Intents, Extensions/MatterSetup) are added as
+# targets here by their own tasks; each must share the App Group
 # group.com.sinap.smartlights and the keychain group with the app.
