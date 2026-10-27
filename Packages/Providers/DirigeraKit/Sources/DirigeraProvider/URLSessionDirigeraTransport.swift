@@ -104,14 +104,16 @@ public final class URLSessionDirigeraTransport: DirigeraTransport {
                 }
             }
             defer { pinger.cancel() }
-            var announced = false
             do {
+                // The hub sends nothing on connect: a pong proves the upgrade succeeded.
+                try await withCheckedThrowingContinuation { (pong: CheckedContinuation<Void, any Error>) in
+                    task.sendPing { error in
+                        if let error { pong.resume(throwing: error) } else { pong.resume() }
+                    }
+                }
+                continuation.yield(.connected)
                 while !Task.isCancelled {
                     let message = try await task.receive()
-                    if !announced {
-                        announced = true
-                        continuation.yield(.connected)
-                    }
                     switch message {
                     case .string(let text): continuation.yield(.message(text))
                     case .data(let data): continuation.yield(.message(String(decoding: data, as: UTF8.self)))
