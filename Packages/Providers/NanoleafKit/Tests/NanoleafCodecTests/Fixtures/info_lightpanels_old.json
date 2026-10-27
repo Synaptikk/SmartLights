@@ -1,0 +1,17 @@
+{
+  "name": "Light Panels 6D:68:2B",
+  "serialNo": "S17201A0123",
+  "manufacturer": "Nanoleaf",
+  "firmwareVersion": "3.1.0",
+  "model": "NL22",
+  "effects": {"effectsList": ["Color Burst", "Flames"], "select": "*Solid*"},
+  "panelLayout": {"layout": {"numPanels": 2, "sideLength": 150, "positionData": [{"panelId": 107, "x": 74, "y": 43, "o": 0}, {"panelId": 108, "x": 149, "y": 86, "o": 180}]}},
+  "state": {
+    "brightness": {"value": 100.0, "max": 100, "min": 0},
+    "colorMode": "ct",
+    "ct": {"value": 2700, "max": 100, "min": 0},
+    "hue": {"value": 0, "max": 360, "min": 0},
+    "on": {"value": false},
+    "sat": {"value": 0, "max": 100, "min": 0}
+  }
+}

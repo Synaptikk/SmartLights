@@ -1,0 +1,2 @@
+Builds and tests in the swift:6.1 Linux container (docker run --rm -v "$PWD":/src -w /src/Packages/Providers/NanoleafKit swift:6.1 swift test).
+Both the codec and the provider (with the fake controller in Tests/NanoleafProviderTests) run on Linux; only Bonjour (NanoleafBonjour.swift) is Apple-only.
