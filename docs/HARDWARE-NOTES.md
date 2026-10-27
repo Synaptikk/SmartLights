@@ -142,3 +142,15 @@ Implemented from research_hue.md §2 and HueEntertainmentKit; checked only again
 - Whether `status` turns `active` immediately after `{"action":"start"}` and what `active_streamer.rtype` is for our key (`auth_v1` assumed).
 
 How to check: pair, create an Entertainment area in the Hue app, run a session with two channels alternating red/blue at 1 Hz for 30 s, then confirm the lights restore after `stop()`. Record bridge model, `swversion` and the outcome here.
+
+## 2026-10-27 - Network fixed; first real-device sightings
+
+- Root cause of the earlier empty probes: the Kinetic FAST 5380 gateway had the 2.4 GHz SSID renamed to `KINETIC_FD5DE0_2.4` when bands were split; bulbs were provisioned on `KINETIC_FD5DE0`. Fixed via the gateway admin UI: both 2.4 GHz and 5 GHz now broadcast `KINETIC_FD5DE0` (WPA2, same password). Client isolation is off on both bands. Note: the Apply button on this gateway shows a "Wi-Fi Settings ... Continue" popup that must be confirmed.
+- Gateway 2.4 GHz client list after the fix: 3x AiDot bulbs, 2x `GE_Light_*` and 1x `GE_DIMMER_*` (GE Cync: Wi-Fi, cloud/Matter only per BRAND-RUNDOWN), a Samsung device. 5 GHz: iPhone and the Tuya-looking device `fc:3c:d7:ef:a5:ca` (192.168.254.38, TCP 6668 open).
+- **AiDot LAN discovery confirmed on real hardware** (`node aidot.mjs discover`, unauthenticated `devDiscoveryReq`): 
+  - 192.168.254.57 devId cfcce60e251346b799f01817860914e7 mac 64:e8:33:bb:80:10 model `LK.light.A001577` lanMode=1
+  - 192.168.254.75 devId b9aedd2ec40b4edd9dea95e87bcb70f0 mac 88:56:a6:14:15:14 model `LK.light.A000183` lanMode=1
+  - 192.168.254.74 devId 76a6e7c739bf47b0b3beaf5cedeb8664 mac 64:e8:33:b5:27:30 model `LK.light.A001577` lanMode=1
+  Model `LK.light.A001577` is not in the python-aidot notes (A001493/A001497 were); treat capability detection via the products endpoint as required.
+- WiZ: no bulbs answered broadcast or unicast sweep after the SSID fix (3 attempts over ~8 min). Either powered off at the wall or provisioned on a different SSID/password; needs user check.
+- Hue bridge: not on mDNS, not registered at discovery.meethue.com; wired device, so check gateway DHCP leases / power.
