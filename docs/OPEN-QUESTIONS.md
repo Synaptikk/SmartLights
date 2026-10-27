@@ -37,3 +37,7 @@ The first probe run from the dev PC (`192.168.254.40`, wired to the Sagemcom/Kin
     - restore and register both providers in `ProviderWiring`;
     - give DIRIGERA the app's Keychain TOFU pin store;
     - add `_ihsp._tcp` and `_hap._tcp` to `NSBonjourServices` if DIRIGERA Bonjour discovery should work. Manual IP and the sweep work without them.
+
+## From T2.5b (ShellyKit + MagicHomeKit, 2026-10-27)
+
+11. **Shelly / Magic Home devices:** do you own any? If so, which models (Shelly: the type from the Shelly app, e.g. Duo, Bulb RGBW, Plus RGBW PM, Duo Bulb Gen3; Magic Home: the controller or bulb type, and whether the app calls it "RGB", "RGBW", "RGBCW" or "CCT")? Both providers are tested only against in-process fakes so far. The Gen3 bulb component names and the Magic Home model table need one probe each on real hardware.
