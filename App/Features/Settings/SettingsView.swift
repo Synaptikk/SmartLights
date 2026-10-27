@@ -17,6 +17,13 @@ struct SettingsView: View {
                         }
                     }
                 }
+                Section("Voice") {
+                    NavigationLink {
+                        SiriHelpView()
+                    } label: {
+                        Label("Siri & Shortcuts", systemImage: "mic")
+                    }
+                }
                 Section("Support") {
                     NavigationLink {
                         DiagnosticsView()
