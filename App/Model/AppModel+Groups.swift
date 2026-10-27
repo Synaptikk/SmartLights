@@ -106,7 +106,7 @@ extension AppModel {
     }
 
     /// `command` with the group's transition filled in (an explicit transition wins).
-    static func command(_ command: LightCommand, for group: LightGroup) -> LightCommand {
+    nonisolated static func command(_ command: LightCommand, for group: LightGroup) -> LightCommand {
         var command = command
         if command.transition == nil { command.transition = group.transition }
         return command
@@ -181,7 +181,7 @@ extension AppModel {
 
     /// The command that makes another light look like `state`. Effects are vendor-specific and
     /// are not mirrored; colour is converted per target by the providers.
-    static func mirrorCommand(for state: LightState, transition: Duration?) -> LightCommand {
+    nonisolated static func mirrorCommand(for state: LightState, transition: Duration?) -> LightCommand {
         var command = state.asCommand
         command.effect = nil
         command.transition = transition

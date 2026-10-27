@@ -157,7 +157,7 @@ extension AppModel {
     }
 
     /// Lights that receive the same command, in a stable order (by first light id).
-    static func commandBuckets(_ commands: [LightID: LightCommand]) -> [(command: LightCommand, lightIDs: [LightID])] {
+    nonisolated static func commandBuckets(_ commands: [LightID: LightCommand]) -> [(command: LightCommand, lightIDs: [LightID])] {
         Dictionary(grouping: commands, by: \.value)
             .map { command, entries in (command: command, lightIDs: entries.map(\.key).sorted()) }
             .sorted { $0.lightIDs[0] < $1.lightIDs[0] }
