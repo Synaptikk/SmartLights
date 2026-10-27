@@ -1,11 +1,17 @@
 #if canImport(Onboarding)
 import AiDotKit
 import Foundation
+import GoveeProvider
 import HomeKitProvider
+import LIFXProvider
 import LightCore
+import MerossProvider
+import NanoleafProvider
 import NetKit
 import Observation
 import Onboarding
+import SwitchBotProvider
+import TuyaKit
 import WiZCodec
 import WiZKit
 
@@ -24,10 +30,15 @@ struct AddFlowError: LocalizedError, Equatable {
 ///   cached hosts of paired devices, manual IPs), reconciliation with stored ids, then a
 ///   multi-select list (`DeviceSelection`) with an "Add by IP address" field. Brands without a
 ///   separate pair step (WiZ, AiDot) pair the chosen devices right away.
-/// - `pair` (Hue): pairs every chosen bridge plus a manual IP from the guide; the provider asks for
-///   the link button through `ctx.ui`.
-/// - `login` (AiDot): pairs the account placeholder; the provider asks for country/user/password.
-/// - `importKey` (WiZ): imports the home signing key from a file or pasted text into the Keychain.
+/// - `pair`: pairs every chosen device plus manual IPs from the guide; the provider asks for what
+///   it needs through `ctx.ui` (Hue link button, Nanoleaf power button, Dirigera action button,
+///   TP-Link e-mail/password, Shelly admin password, Tuya device id/local key, Home Assistant URL +
+///   token). With nothing chosen, Tuya and Home Assistant pair a placeholder that asks for
+///   everything (no discovery needed).
+/// - `login` (AiDot, Meross, SwitchBot): pairs the account placeholder; the provider asks for
+///   credentials (country/e-mail/password, or token + secret).
+/// - `importKey`: WiZ imports the home signing key from a file or pasted text; Govee connects the
+///   Developer API key (`connectCloud`); LIFX stores the optional cloud token.
 /// - `permission.homeKit`: registers Apple Home and waits for the permission answer.
 /// - `permission.localNetwork`: triggers and checks the Local Network prompt.
 /// - `verify`: pairs anything still pending, blinks one light, asks the user to confirm.
@@ -126,6 +137,10 @@ final class AddBrandActions {
     private static func discoveryTimeout(_ brand: Brand) -> Duration {
         switch brand {
         case .wiz: .seconds(20) // subnet sweep without the multicast entitlement
+        // /24 unicast sweeps (TCP/UDP/HTTPS probes) when broadcast is unavailable.
+        case .tplink, .tuya, .govee, .shelly, .twinkly, .dirigera, .yeelight, .lifx: .seconds(15)
+        // Cloud device lists.
+        case .meross, .switchbot: .seconds(20)
         case .aidot: .seconds(12)
         case .appleHome: .seconds(5)
         default: .seconds(10)
@@ -162,10 +177,37 @@ final class AddBrandActions {
     // MARK: Pairing
 
     private func pairStep(_ brand: Brand, context: GuideActionContext) async throws -> StepAnswer {
+        // Brands whose provider can ask for everything (device id/key/IP, server URL) pair a
+        // placeholder when the scan found nothing or was skipped.
+        if !chosen.contains(where: { $0.brand == brand }), manualHosts(in: context).isEmpty,
+           let placeholder = Self.manualPlaceholder(for: brand) {
+            chosen.append(placeholder)
+        }
         let new = try await pairPending(brand, context: context)
         if let last = new.last { return .paired(last) }
         if let last = paired.last(where: { $0.brand == brand }) { return .paired(last) }
         throw AddFlowError("Nothing to add yet. Run Scan and pick a device, or enter its IP address.")
+    }
+
+    /// "Enter the details" device for brands that can be added without discovery.
+    private static func manualPlaceholder(for brand: Brand) -> DiscoveredDevice? {
+        switch brand {
+        case .tuya: TuyaProvider.manualPlaceholder()
+        case .homeAssistant: DiscoveredDevice(id: "manual", brand: .homeAssistant, name: "Home Assistant", method: .manual)
+        case .meross: MerossProvider.accountPlaceholder()
+        case .switchbot: SwitchBotProvider.accountPlaceholder()
+        default: nil
+        }
+    }
+
+    /// Account-level placeholder paired by the `login` step of cloud brands.
+    private static func accountPlaceholder(for brand: Brand) -> DiscoveredDevice {
+        switch brand {
+        case .aidot: AiDotProvider.accountPlaceholder()
+        case .meross: MerossProvider.accountPlaceholder()
+        case .switchbot: SwitchBotProvider.accountPlaceholder()
+        default: DiscoveredDevice(id: "account", brand: brand, name: "\(brand.displayName) account", method: .cloud)
+        }
     }
 
     /// Pairs every chosen device not paired yet, plus manual IPs typed into the guide.
@@ -202,11 +244,11 @@ final class AddBrandActions {
     }
 
     private func login(_ brand: Brand, context: GuideActionContext) async throws -> StepAnswer {
-        let provider = try await provider(for: brand)
+        _ = try await provider(for: brand)
         // Cloud brands pair the account; the provider asks for credentials through `ctx.ui`
-        // (AiDot: country, e-mail, password) and returns an account-level PairedDevice.
-        var account = DiscoveredDevice(id: "account", brand: brand, name: "\(brand.displayName) account", method: .cloud)
-        if provider is AiDotProvider { account = AiDotProvider.accountPlaceholder() }
+        // (AiDot: country, e-mail, password; Meross: region, e-mail, password or key + IP;
+        // SwitchBot: token + secret) and returns an account-level PairedDevice.
+        let account = Self.accountPlaceholder(for: brand)
         let result = try await model.pair(account, using: context.ui)
         pairedIDs.insert(account.id)
         paired.append(result)
@@ -216,7 +258,36 @@ final class AddBrandActions {
     // MARK: WiZ key
 
     private func importKey(_ brand: Brand, context: GuideActionContext) async throws -> StepAnswer {
-        guard brand == .wiz, let wiz = try await provider(for: brand) as? WiZProvider else { return .done }
+        switch try await provider(for: brand) {
+        case let govee as GoveeProvider:
+            // Developer API key: the provider prompts, validates it with Govee and stores it.
+            let devices = try await govee.connectCloud(using: context.ui)
+            try await saveAccount(of: govee, brand: brand)
+            DiagnosticsCollector.shared.note("Govee: API key stored (\(devices.count) cloud device(s))", category: "add")
+            await model.refresh()
+            return .done
+        case let lifx as LIFXProvider:
+            try await lifx.configureCloudToken(using: context.ui)
+            try await saveAccount(of: lifx, brand: brand)
+            DiagnosticsCollector.shared.note("LIFX: cloud token stored", category: "add")
+            return .done
+        case let wiz as WiZProvider:
+            return try await importWiZKey(wiz, context: context)
+        default:
+            return .done
+        }
+    }
+
+    /// Persists the provider's account (no secrets inside) and clears a pending re-sign-in.
+    private func saveAccount(of provider: any LightProvider, brand: Brand) async throws {
+        if let account = await provider.account {
+            try await model.deviceStore.save(account)
+        }
+        model.reauthenticationNeeded.remove(brand)
+    }
+
+    private func importWiZKey(_ wiz: WiZProvider, context: GuideActionContext) async throws -> StepAnswer {
+        let brand = Brand.wiz
         let ui = context.ui
         let options = ["Import the key file exported from the WiZ app", "Paste the key"]
         let key: WiZSigningKey
@@ -271,16 +342,16 @@ final class AddBrandActions {
         "Local Network access is off. Turn on Settings > Privacy & Security > Local Network > SmartLights.")
 
     private func isBroadcastAvailable(_ brand: Brand) async throws -> Bool {
-        guard brand != .appleHome else { return false }
+        // Apple Home and the cloud-only SwitchBot API never touch the LAN.
+        guard brand != .appleHome, brand != .switchbot else { return false }
         if let broadcastAvailable { return broadcastAvailable }
         let status = await BroadcastCapability.detect()
         DiagnosticsCollector.shared.note("Broadcast capability: \(status.rawValue)", category: "add")
         if status == .localNetworkDenied { throw Self.localNetworkDenied }
         let available = status == .entitled
         broadcastAvailable = available
-        if let aidot = await model.registry.provider(for: .aidot) as? AiDotProvider {
-            await aidot.setBroadcastAvailable(available)
-        }
+        // AiDot, Govee and Tuya keep the flag for their own background rescans.
+        await ProviderWiring.applyBroadcast(available, in: model)
         return available
     }
 
@@ -317,9 +388,16 @@ final class AddBrandActions {
     }
 
     private func blink(_ id: LightID, brand: Brand) async throws {
-        if brand == .wiz, let wiz = await model.registry.provider(for: .wiz) as? WiZProvider {
+        // Providers with a native identify flash use it; the rest toggle power twice.
+        switch await model.registry.provider(for: brand) {
+        case let wiz as WiZProvider:
             try await wiz.identify(id)
             return
+        case let nanoleaf as NanoleafProvider:
+            try await nanoleaf.identify(id)
+            return
+        default:
+            break
         }
         let wasOn = model.lightsByID[id]?.state.isOn ?? true
         for _ in 0..<2 {
@@ -333,7 +411,9 @@ final class AddBrandActions {
     // MARK: Helpers
 
     private func provider(for brand: Brand) async throws -> any LightProvider {
-        guard let provider = await ProviderWiring.ensureRegistered(brand, in: model) else {
+        // No refresh here: a just-created provider has nothing paired yet (cloud brands would only
+        // report "sign in first"); `AppModel.pair` refreshes after each pairing.
+        guard let provider = await ProviderWiring.ensureRegistered(brand, in: model, refresh: false) else {
             throw AddFlowError("\(brand.displayName) is not available in this build yet.")
         }
         return provider

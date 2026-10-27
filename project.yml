@@ -72,6 +72,10 @@ packages:
     path: Packages/Providers/DirigeraKit
   HomeAssistantKit:
     path: Packages/Providers/HomeAssistantKit
+  MerossKit:
+    path: Packages/Providers/MerossKit
+  SwitchBotKit:
+    path: Packages/Providers/SwitchBotKit
 
 targets:
   SmartLights:
@@ -135,6 +139,10 @@ targets:
         product: DirigeraProvider
       - package: HomeAssistantKit
         product: HomeAssistantKit
+      - package: MerossKit
+        product: MerossProvider
+      - package: SwitchBotKit
+        product: SwitchBotProvider
       - sdk: HomeKit.framework
     settings:
       base:

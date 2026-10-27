@@ -127,7 +127,10 @@ struct RunnerTests {
     }
 
     @Test func stubGuideIsFinishedImmediately() throws {
-        let runner = GuideRunner(guide: try #require(GuideCatalog.standard.guide(for: .tuya)))
+        // Every catalog brand guide has steps now; a summary-only guide is still a valid stub.
+        let stub = BrandGuide(id: "stub", brand: nil, title: "Stub", summary: "Summary only.", phase: 3)
+        #expect(stub.isStub)
+        let runner = GuideRunner(guide: stub)
         #expect(runner.isFinished)
         #expect(runner.currentStep == nil)
         #expect(!runner.canAdvance)
