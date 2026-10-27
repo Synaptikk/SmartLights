@@ -25,3 +25,7 @@ _No third-party code has been included yet._
 ## LightCore
 
 See `Packages/LightCore/NOTICES.md` for attributions (Home Assistant Apache-2.0 colour utilities, house-control MIT, benknight/rgbxy MIT).
+
+## HueKit
+
+See `Packages/Providers/HueKit/NOTICES.md` (aiohue test fixture, Apache-2.0; Signify root CA PEM via Hue-Sync).
