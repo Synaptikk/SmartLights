@@ -1,0 +1,11 @@
+{
+  "requestId": "uuid",
+  "msg": "success",
+  "code": 200,
+  "capability": {
+    "type": "devices.capabilities.on_off",
+    "instance": "powerSwitch",
+    "state": { "status": "success" },
+    "value": 0
+  }
+}

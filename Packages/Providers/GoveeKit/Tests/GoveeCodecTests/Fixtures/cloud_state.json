@@ -1,0 +1,19 @@
+{
+  "requestId": "uuid",
+  "msg": "success",
+  "code": 200,
+  "payload": {
+    "sku": "H6601",
+    "device": "9D:FA:85:EB:D3:00:8B:FF",
+    "capabilities": [
+      { "type": "devices.capabilities.online", "instance": "online", "state": { "value": true } },
+      { "type": "devices.capabilities.on_off", "instance": "powerSwitch", "state": { "value": 1 } },
+      { "type": "devices.capabilities.toggle", "instance": "gradientToggle", "state": { "value": 0 } },
+      { "type": "devices.capabilities.range", "instance": "brightness", "state": { "value": 50 } },
+      { "type": "devices.capabilities.segment_color_setting", "instance": "segmentedColorRgb", "state": { "value": "" } },
+      { "type": "devices.capabilities.color_setting", "instance": "colorRgb", "state": { "value": 16744448 } },
+      { "type": "devices.capabilities.color_setting", "instance": "colorTemperatureK", "state": { "value": 0 } },
+      { "type": "devices.capabilities.dynamic_scene", "instance": "lightScene", "state": { "value": "" } }
+    ]
+  }
+}
