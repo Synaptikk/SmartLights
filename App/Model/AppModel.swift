@@ -60,6 +60,8 @@ final class AppModel {
     @ObservationIgnored var lightCacheTask: Task<Void, Never>?
     @ObservationIgnored private var eventTask: Task<Void, Never>?
     @ObservationIgnored private var started = false
+    /// Foreground/background hooks of the real providers (installed by `ProviderWiring`).
+    @ObservationIgnored let providerLifecycle = ProviderLifecycle()
 
     init(
         registry: ProviderRegistry = ProviderRegistry(),
@@ -140,8 +142,10 @@ final class AppModel {
         await reloadVendorScenes()
     }
 
-    /// Foreground/background hook (T1.6 re-registers WiZ push, reconnects Hue SSE, ...).
+    /// Foreground/background hook: reconnects Hue SSE, re-registers WiZ push and reopens AiDot TCP
+    /// in the foreground (`ProviderLifecycle`), stops them in the background, refreshes on return.
     func scenePhaseChanged(isActive: Bool) {
+        providerLifecycle.setActive(isActive)
         guard isActive, started else { return }
         Task { await refresh() }
     }
@@ -163,6 +167,7 @@ final class AppModel {
         if let account = await provider.account {
             try await deviceStore.save(account)
         }
+        reauthenticationNeeded.remove(device.brand)
         await refresh()
         return paired
     }
@@ -198,8 +203,10 @@ final class AppModel {
         case .scenesChanged:
             Task { await reloadVendorScenes() }
         case .needsReauthentication:
-            reauthenticationNeeded.insert(brand)
-            showToast("\(brand.displayName) needs you to sign in again.", isError: true)
+            // Toast once per brand until it is paired again; Settings shows a badge meanwhile.
+            if reauthenticationNeeded.insert(brand).inserted {
+                showToast("\(brand.displayName) needs you to sign in again. Open Add > \(brand.displayName).", isError: true)
+            }
         case .connectionChanged(let connected, let detail):
             health.connected = connected
             health.detail = detail

@@ -40,6 +40,12 @@ packages:
     path: Packages/Onboarding
   HomeKitProvider:
     path: Packages/Providers/HomeKitProvider
+  HueKit:
+    path: Packages/Providers/HueKit
+  WiZKit:
+    path: Packages/Providers/WiZKit
+  AiDotKit:
+    path: Packages/Providers/AiDotKit
 
 targets:
   SmartLights:
@@ -65,6 +71,15 @@ targets:
         product: Onboarding
       - package: HomeKitProvider
         product: HomeKitProvider
+      - package: HueKit
+        product: HueKit
+      - package: WiZKit
+        product: WiZKit
+      # WiZSigningKey (key import in the Add flow) lives in the codec target.
+      - package: WiZKit
+        product: WiZCodec
+      - package: AiDotKit
+        product: AiDotKit
       - sdk: HomeKit.framework
     settings:
       base:
