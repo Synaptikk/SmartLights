@@ -186,8 +186,11 @@ struct HueEntertainmentSessionTests {
         #expect(frames.map(\.sequence) == (0..<frames.count).map { UInt8(truncatingIfNeeded: $0) })
 
         #expect(await session.state == .stopped(.requested))
-        #expect(connector.channel.isClosed)
-        #expect(try Self.actions(transport) == ["start", "stop"])
+        // The stop request and channel close complete shortly after the state flips; wait for both.
+        let closed = await eventually { connector.channel.isClosed }
+        #expect(closed)
+        let stopSent = await eventually { (try? Self.actions(transport)) == ["start", "stop"] }
+        #expect(stopSent)
 
         // Idempotent; no frames after stop.
         await session.stop()
@@ -207,8 +210,10 @@ struct HueEntertainmentSessionTests {
         await session.setChannels(Self.channels)
         let stopped = await eventually { await session.state == .stopped(.idle) }
         #expect(stopped)
-        #expect(connector.channel.isClosed)
-        #expect(try Self.actions(transport) == ["start", "stop"])
+        let closed = await eventually { connector.channel.isClosed }
+        #expect(closed)
+        let stopSent = await eventually { (try? Self.actions(transport)) == ["start", "stop"] }
+        #expect(stopSent)
         // The last frame was repeated until the idle timeout (600 ms at 25 Hz leaves ample margin on slow CI runners).
         #expect(connector.channel.datagrams.count >= 1)
     }
