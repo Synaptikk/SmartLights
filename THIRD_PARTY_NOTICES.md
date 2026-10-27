@@ -33,3 +33,11 @@ See `Packages/Providers/HueKit/NOTICES.md` (aiohue test fixture, Apache-2.0; Sig
 ## AiDotKit
 
 Protocol ported from python-aidot 0.3.59 (AiDot-Development-Team, MIT); test fixtures generated with it.
+
+## ShellyKit
+
+No code copied. Protocol details from aioshelly and Home Assistant's `shelly` integration (both Apache-2.0) and RFC 7616 test vectors; see `Packages/Providers/ShellyKit/NOTICES.md`.
+
+## MagicHomeKit
+
+No code copied. flux_led (LGPL-3.0) was used only as a protocol reference (byte layouts, model-id table data, test byte vectors); the Swift code is an independent implementation. See `Packages/Providers/MagicHomeKit/NOTICES.md`.

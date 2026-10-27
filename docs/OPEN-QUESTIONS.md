@@ -18,3 +18,7 @@ The first probe run from the dev PC (`192.168.254.40`, wired to the Sagemcom/Kin
    - Which country is the account registered in? This picks the `us`/`eu`/`jp` API region.
 7. **Test device for writes:** which single bulb per brand may agents toggle? Give a WiZ IP or MAC, a Hue light uuid (from `hue.mjs list`) and an AiDot devId (from `aidot.mjs devices`). Writes run only with `TEST_DEVICE=<that id>` set in the shell.
 8. **Tuya-looking device at `192.168.254.38`** (TCP 6668 open, MAC `fc:3c:d7:ef:a5:ca`): what is it? If it's a light or plug you want in the app, it belongs to the Phase 2 Tuya provider.
+
+## From T2.5b (ShellyKit + MagicHomeKit, 2026-10-27)
+
+9. **Shelly / Magic Home devices:** do you own any? If so, which models (Shelly: the type from the Shelly app, e.g. Duo, Bulb RGBW, Plus RGBW PM, Duo Bulb Gen3; Magic Home: the controller or bulb type, and whether the app calls it "RGB", "RGBW", "RGBCW" or "CCT")? Both providers are tested only against in-process fakes so far. The Gen3 bulb component names and the Magic Home model table need one probe each on real hardware.
