@@ -23,7 +23,7 @@ public struct GuideCatalog: Sendable, Hashable {
         wiz,
         aidot,
         appleHome,
-    ] + stubs + pointers)
+    ] + phase2 + stubs + pointers)
 
     public func guide(id: String) -> BrandGuide? {
         guides.first { $0.id == id }

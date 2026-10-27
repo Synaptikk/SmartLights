@@ -81,3 +81,13 @@ node aidot.mjs login && node aidot.mjs devices && node aidot.mjs discover && nod
 | WiZ | MAC | | `getSystemConfig.moduleName` | `fwVersion` | `hmac` on reads? `-32602` on test `set`? `cctRange` |
 | Hue | bridgeid | | `modelid` (BSB002 / BSB003) | `swversion` / `apiversion` | cert issuer: self-signed vs `root-bridge` |
 | AiDot | devId | | `modelId` | `firmwareVersion` | `simpleVersion` present? TCP login ok? |
+
+## Hue Entertainment (T3.8): to verify on a real bridge
+
+Implemented from research_hue.md §2 and HueEntertainmentKit; checked only against a Network.framework DTLS-PSK loopback server in macOS CI. Open points (research_hue.md marks the cipher detail UNVERIFIED):
+- Does Apple's DTLS 1.2 stack (`NWDTLSConnector`, cipher 0x00A8 appended) complete the handshake with Bridge v2 / Bridge Pro? Expected yes (HueEntertainmentKit does the same).
+- Does the bridge accept the PSK identity as the application key exactly as returned by pairing (case preserved)?
+- How long the bridge keeps an area streaming without datagrams (research: "a few seconds"); the session sends every 20-40 ms, so this only matters if the app is suspended.
+- Whether `status` turns `active` immediately after `{"action":"start"}` and what `active_streamer.rtype` is for our key (`auth_v1` assumed).
+
+How to check: pair, create an Entertainment area in the Hue app, run a session with two channels alternating red/blue at 1 Hz for 30 s, then confirm the lights restore after `stop()`. Record bridge model, `swversion` and the outcome here.

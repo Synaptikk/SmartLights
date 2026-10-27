@@ -24,6 +24,9 @@ extension AppModel {
             applyOptimistically(command, to: id)
         }
         coalescer.enqueue(command, key: groupKey, targets: targets)
+        for id in targets {
+            mirrorLightSync(from: id)
+        }
     }
 
     func setPower(_ isOn: Bool, for id: LightID) {

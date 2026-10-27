@@ -29,7 +29,10 @@ if [ -n "${GITHUB_ENV:-}" ]; then echo "DEVELOPER_DIR=$app/Contents/Developer" >
 xcodebuild -version
 swift --version
 
-major="$(xcodebuild -version | awk '/^Xcode/{split($2,v,"."); print v[1]; exit}')"
+# Capture first, then parse: piping into a reader that exits early (awk `exit`, head) makes
+# xcodebuild die on SIGPIPE (NSFileHandleOperationException, exit 134) and pipefail fails the step.
+version_output="$(xcodebuild -version)"
+major="$(printf '%s\n' "$version_output" | awk '/^Xcode/{split($2,v,"."); m=v[1]} END{print m}')"
 if [ "${major:-0}" -lt "$min_major" ]; then
   warn "Selected Xcode $major is older than the project's required Xcode $min_major (CLAUDE.md). Set repo variable MACOS_RUNNER / XCODE_VERSION."
 fi
