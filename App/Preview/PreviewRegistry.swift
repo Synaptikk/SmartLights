@@ -15,6 +15,7 @@ enum PreviewRegistry {
             model.lightsByID[light.id] = light
         }
         model.rooms = PreviewData.library.rooms
+        model.groups = PreviewData.library.groups
         model.appScenes = PreviewData.library.scenes
         model.vendorScenes = PreviewData.vendorScenes
         model.seenLightIDs = Set(PreviewData.lights.map(\.id))
