@@ -14,7 +14,7 @@ extension ForegroundContinuableIntent {
     /// Sends `command`, first moving to the foreground if an Apple Home light is involved and the
     /// app is not already active.
     @MainActor
-    func run(_ command: LightCommand, on ids: [LightID], model: AppModel) async throws -> IntentOutcome {
+    func sendForIntent(_ command: LightCommand, on ids: [LightID], model: AppModel) async throws -> IntentOutcome {
         try await continueInForegroundIfNeeded(for: ids.map(\.brand))
         return try await model.performIntent(command, on: ids)
     }
@@ -31,7 +31,7 @@ extension ForegroundContinuableIntent {
     func setPower(_ on: Bool, light entity: LightEntity, model: AppModel) async throws -> String {
         await model.prepareForIntents()
         let light = try model.resolve(entity)
-        let outcome = try await run(LightCommand(on: on), on: [light.id], model: model)
+        let outcome = try await sendForIntent(LightCommand(on: on), on: [light.id], model: model)
         return "\(light.name) is \(on ? "on" : "off").\(outcome.failureSuffix)"
     }
 
@@ -39,7 +39,7 @@ extension ForegroundContinuableIntent {
     func setPower(_ on: Bool, room entity: RoomEntity, model: AppModel) async throws -> String {
         await model.prepareForIntents()
         let (room, lights) = try model.resolve(entity)
-        let outcome = try await run(LightCommand(on: on), on: lights.map(\.id), model: model)
+        let outcome = try await sendForIntent(LightCommand(on: on), on: lights.map(\.id), model: model)
         return "\(room.name) is \(on ? "on" : "off").\(outcome.failureSuffix)"
     }
 
@@ -48,7 +48,7 @@ extension ForegroundContinuableIntent {
     func setBrightness(_ percent: Int, on lights: [Light], name: String, model: AppModel) async throws -> String {
         let clamped = min(max(percent, 0), 100)
         let command = clamped == 0 ? LightCommand(on: false) : LightCommand(on: true, brightness: Double(clamped) / 100)
-        let outcome = try await run(command, on: lights.map(\.id), model: model)
+        let outcome = try await sendForIntent(command, on: lights.map(\.id), model: model)
         let what = clamped == 0 ? "off" : "\(clamped)%"
         return "\(name) set to \(what).\(outcome.failureSuffix)"
     }
@@ -275,7 +275,7 @@ struct SetColorIntent: AppIntent, ForegroundContinuableIntent {
         guard caps.supportsColor || caps.supportsColorTemp else {
             throw IntentFailure.unsupported("\(target.name) can't change colour.")
         }
-        let outcome = try await run(LightCommand(on: true, color: attribute), on: [target.id], model: model)
+        let outcome = try await sendForIntent(LightCommand(on: true, color: attribute), on: [target.id], model: model)
         return .result(dialog: "\(target.name) set to \(spoken).\(outcome.failureSuffix)")
     }
 }
@@ -309,7 +309,7 @@ struct SetColorTemperatureIntent: AppIntent, ForegroundContinuableIntent {
         }
         let requested = min(max(kelvin, 1000), 10000)
         let applied = caps.supportsColorTemp ? caps.clampKelvin(requested) : requested
-        let outcome = try await run(LightCommand(on: true, color: .kelvin(applied)), on: [target.id], model: model)
+        let outcome = try await sendForIntent(LightCommand(on: true, color: .kelvin(applied)), on: [target.id], model: model)
         return .result(dialog: "\(target.name) set to \(applied) kelvin.\(outcome.failureSuffix)")
     }
 }
