@@ -85,8 +85,11 @@ research/research_onboarding.md §6.
 - `send` / `sendGroup` (default fan-out) / `identify(_:)` / `removeDevice(_:)` (DELETE token, delete
   secret, `.lightRemoved`).
 - `start()` / `stop()`: one SSE connection per controller with reconnect (exponential backoff 1 s →
-  60 s, 20% jitter), idle timeout 300 s, a full info re-read after every (re)connect, and
-  `.connectionChanged` events. State events → `.stateChanged`; an unknown effect name or a layout
+  60 s, 20% jitter), idle timeout 300 s, and a full info re-read each time the stream is (re)opened.
+  The re-read does not wait for the response head: on Darwin, URLSession only delivers the head
+  of the close-delimited SSE response together with the first body bytes, and a controller sends
+  nothing until something changes. For the same reason `.connectionChanged(connected: true)` can lag
+  until the first event on Apple platforms. State events → `.stateChanged`; an unknown effect name or a layout
   event → re-read + `.lightUpdated` (+ `.scenesChanged`). Touch gestures go to `touchEvents`
   (`NanoleafTouchEvent`).
 - Reachability: a transport failure (or an SSE reconnect that cannot connect) → `.reachabilityChanged(false)`;

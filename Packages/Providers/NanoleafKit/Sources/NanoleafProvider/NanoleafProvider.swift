@@ -632,7 +632,13 @@ public actor NanoleafProvider: LightProvider {
             var fatal = false
             var reason = "stream ended"
             do {
+                // The request starts immediately; resync over plain HTTP while it connects instead of
+                // waiting for the response head: Darwin's URLSession only delivers the head of a
+                // close-delimited SSE response together with the first body bytes, and a controller
+                // sends nothing until something changes. Changes after the stream is up arrive as
+                // events; changes before it are covered by the re-read.
                 let stream = transport.stream(request, to: record.endpoint, idleTimeout: configuration.eventIdleTimeout)
+                await resync(stableID)
                 for try await part in stream {
                     switch part {
                     case .opened(let status):
@@ -641,7 +647,6 @@ public actor NanoleafProvider: LightProvider {
                             backoff.reset()
                             setReachable(stableID, true)
                             continuation.yield(.connectionChanged(connected: true, detail: "Nanoleaf \(record.name)"))
-                            await resync(stableID)
                         } else if status == 401 || status == 403 {
                             fatal = true
                             log.error("Nanoleaf \(stableID) event stream rejected the token (HTTP \(status))")
@@ -674,7 +679,7 @@ public actor NanoleafProvider: LightProvider {
         }
     }
 
-    /// Full re-read after (re)connecting so changes during a gap are not missed.
+    /// Full re-read when (re)connecting the event stream so changes during a gap are not missed.
     private func resync(_ stableID: String) async {
         let before = devices[stableID]?.info
         guard await refresh(stableID), let record = devices[stableID] else { return }

@@ -249,15 +249,17 @@ struct NanoleafProviderTests {
 
         #expect(await waitUntil { server.openEventClients == 1 })
         #expect(server.requests.contains { $0.path.hasSuffix("/events?id=1,2,3,4") })
-        #expect(await recorder.wait { if case .connectionChanged(true, _) = $0 { return true }; return false } != nil)
 
-        // External change (e.g. from the Nanoleaf app or the physical button).
+        // External change (e.g. from the Nanoleaf app or the physical button). Like a real controller,
+        // the fake sends no body bytes before the first event; Darwin's URLSession only reports the
+        // response head together with them, so `.connectionChanged(true)` is checked afterwards.
         server.push(id: 1, json: #"{"events":[{"attr":2,"value":12}]}"#)
         let dimmed = await recorder.wait { event in
             if case .stateChanged(let lid, let s) = event { return lid == id && s.brightness == 0.12 }
             return false
         }
         #expect(dimmed != nil)
+        #expect(await recorder.wait { if case .connectionChanged(true, _) = $0 { return true }; return false } != nil)
 
         // Connection drops; the provider reconnects and keeps receiving.
         server.dropEventClients()
@@ -277,6 +279,22 @@ struct NanoleafProviderTests {
             return false
         }
         #expect(effect != nil)
+    }
+
+    @Test func resyncsWhenStreamStartsEvenIfSilent() async throws {
+        let (server, provider, _, id) = try await pairedFixture()
+        defer { server.stop() }
+        _ = try await provider.loadLights()
+        let recorder = EventRecorder(provider.events)
+        // Changed while we were not listening; the stream itself stays silent.
+        server.mutate { $0.brightness = 7 }
+        await provider.start()
+        defer { Task { await provider.stop() } }
+        let resynced = await recorder.wait { event in
+            if case .stateChanged(let lid, let s) = event { return lid == id && s.brightness == 0.07 }
+            return false
+        }
+        #expect(resynced != nil)
     }
 
     @Test func forwardsTouchEvents() async throws {
