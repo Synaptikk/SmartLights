@@ -22,9 +22,10 @@ extension ForegroundContinuableIntent {
     @MainActor
     func continueInForegroundIfNeeded(for brands: [Brand]) async throws {
         guard brands.contains(.appleHome), UIApplication.shared.applicationState != .active else { return }
-        try await requestToContinueInForeground(
+        // Default (empty) continuation: the work continues below in `perform()` once foregrounded.
+        let _: Void = try await requestToContinueInForeground(
             "Apple Home lights can only be changed while SmartLights is open. Continue in SmartLights?"
-        ) {}
+        )
     }
 
     @MainActor
